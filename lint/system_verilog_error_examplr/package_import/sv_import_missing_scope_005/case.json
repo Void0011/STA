@@ -1,0 +1,20 @@
+{
+  "id": "sv_import_missing_scope_005",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "package_import",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "import 语句缺少 `::`。",
+  "top": "top",
+  "files": [
+    "import_missing_scope.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "import"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

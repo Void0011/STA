@@ -1,0 +1,21 @@
+{
+  "id": "verilog_task_missing_endtask_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "function_task",
+  "standard_focus": "IEEE1364",
+  "description_zh": "task 缺少 endtask。",
+  "top": "top",
+  "files": [
+    "missing_endtask.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "task"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

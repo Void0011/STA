@@ -1,0 +1,20 @@
+{
+  "id": "verilog_instantiation_bad_named_port_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "instantiation",
+  "standard_focus": "IEEE1364",
+  "description_zh": "命名端口连接缺少右括号。",
+  "top": "top",
+  "files": [
+    "bad_named_port.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,17 @@
+{
+  "id": "declaration_undeclared_default_nettype_003",
+  "category": "declaration",
+  "description_zh": "default_nettype none 下使用未声明信号。",
+  "top": "top",
+  "files": [
+    "undeclared_default_nettype.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "Unable to bind",
+    "missing_sig"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

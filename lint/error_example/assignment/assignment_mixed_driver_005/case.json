@@ -1,0 +1,17 @@
+{
+  "id": "assignment_mixed_driver_005",
+  "category": "assignment",
+  "description_zh": "同一 reg 既被连续赋值又被过程赋值。",
+  "top": "top",
+  "files": [
+    "mixed_driver.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "reg",
+    "continuous"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

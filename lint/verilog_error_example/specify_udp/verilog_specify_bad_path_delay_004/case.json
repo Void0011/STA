@@ -1,0 +1,20 @@
+{
+  "id": "verilog_specify_bad_path_delay_004",
+  "language": "verilog",
+  "kind": "error",
+  "category": "specify_udp",
+  "standard_focus": "IEEE1364",
+  "description_zh": "specify 路径延迟表达式不完整。",
+  "top": "top",
+  "files": [
+    "specify_bad_path_delay.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

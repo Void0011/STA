@@ -1,0 +1,21 @@
+{
+  "id": "sv_property_unsupported_003",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "class_unsupported",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "property/endproperty 当前不做语义支持，应给出 UNSUPPORTED_SYSTEMVERILOG。",
+  "top": "top",
+  "files": [
+    "property_unsupported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "UNSUPPORTED_SYSTEMVERILOG",
+    "property"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

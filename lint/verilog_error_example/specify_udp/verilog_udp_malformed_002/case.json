@@ -1,0 +1,21 @@
+{
+  "id": "verilog_udp_malformed_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "specify_udp",
+  "standard_focus": "IEEE1364",
+  "description_zh": "UDP primitive/table 构造不完整。",
+  "top": "top",
+  "files": [
+    "malformed_udp.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "table"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

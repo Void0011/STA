@@ -1,0 +1,20 @@
+{
+  "id": "sv_array_missing_rbracket_003",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "array_dimension",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "array 维度缺少右中括号。",
+  "top": "top",
+  "files": [
+    "array_missing_rbracket.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "bracket"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

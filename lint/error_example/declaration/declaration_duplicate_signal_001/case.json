@@ -1,0 +1,17 @@
+{
+  "id": "declaration_duplicate_signal_001",
+  "category": "declaration",
+  "description_zh": "同一模块内重复声明信号。",
+  "top": "top",
+  "files": [
+    "duplicate_signal.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "already",
+    "declared"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

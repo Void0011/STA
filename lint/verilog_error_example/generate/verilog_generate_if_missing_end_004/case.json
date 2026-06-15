@@ -1,0 +1,20 @@
+{
+  "id": "verilog_generate_if_missing_end_004",
+  "language": "verilog",
+  "kind": "error",
+  "category": "generate",
+  "standard_focus": "IEEE1364",
+  "description_zh": "generate-if 命名块缺少 end。",
+  "top": "top",
+  "files": [
+    "generate_if_missing_end.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

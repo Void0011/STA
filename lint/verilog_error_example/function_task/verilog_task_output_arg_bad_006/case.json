@@ -1,0 +1,21 @@
+{
+  "id": "verilog_task_output_arg_bad_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "function_task",
+  "standard_focus": "IEEE1364",
+  "description_zh": "task 端口方向声明不完整。",
+  "top": "top",
+  "files": [
+    "task_output_arg_bad.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "task"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

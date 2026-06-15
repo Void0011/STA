@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_nonblocking_comb_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "style_timing_risk",
+  "standard_focus": "IEEE1364",
+  "description_zh": "组合 always 中使用非阻塞赋值。",
+  "top": "top",
+  "files": [
+    "nonblocking_comb.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

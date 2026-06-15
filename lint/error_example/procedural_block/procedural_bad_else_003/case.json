@@ -1,0 +1,16 @@
+{
+  "id": "procedural_bad_else_003",
+  "category": "procedural_block",
+  "description_zh": "else 没有匹配的 if。",
+  "top": "top",
+  "files": [
+    "bad_else.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

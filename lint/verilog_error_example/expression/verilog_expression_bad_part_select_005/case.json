@@ -1,0 +1,20 @@
+{
+  "id": "verilog_expression_bad_part_select_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "expression",
+  "standard_focus": "IEEE1364",
+  "description_zh": "part-select 语法缺少冒号左侧表达式。",
+  "top": "top",
+  "files": [
+    "bad_part_select.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

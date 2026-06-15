@@ -1,0 +1,21 @@
+{
+  "id": "verilog_procedural_missing_endcase_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "procedural_block",
+  "standard_focus": "IEEE1364",
+  "description_zh": "case 语句缺少 endcase。",
+  "top": "top",
+  "files": [
+    "missing_endcase.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "endcase"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,47 @@
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 本地运行输出
+runs/
+reports/
+examples/*/out/
+build/
+dist/
+
+# EDA / 仿真 / 波形输出
+*.vcd
+*.fst
+*.fsdb
+*.lxt
+*.lxt2
+*.vvp
+*.jou
+*.log
+*.rpt
+*.sdf
+*.spef
+*.sdc.tmp
+
+# STA-lite 生成物
+lint.log
+lint_summary.json
+tokens.json
+ast.json
+summary.json
+synth.v
+synth.ys
+opensta.tcl
+constraints.sdc
+
+# 本地环境和编辑器文件
+.env
+.venv/
+venv/
+*.swp
+*.swo
+.DS_Store

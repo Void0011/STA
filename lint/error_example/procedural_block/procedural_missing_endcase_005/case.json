@@ -1,0 +1,17 @@
+{
+  "id": "procedural_missing_endcase_005",
+  "category": "procedural_block",
+  "description_zh": "case 语句缺少 endcase。",
+  "top": "top",
+  "files": [
+    "missing_endcase.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "endcase"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

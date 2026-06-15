@@ -1,0 +1,20 @@
+{
+  "id": "verilog_preprocessor_malformed_define_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "preprocessor",
+  "standard_focus": "IEEE1364",
+  "description_zh": "宏展开后产生非法表达式。",
+  "top": "top",
+  "files": [
+    "malformed_define.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

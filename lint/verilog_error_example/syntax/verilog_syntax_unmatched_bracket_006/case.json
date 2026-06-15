@@ -1,0 +1,20 @@
+{
+  "id": "verilog_syntax_unmatched_bracket_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "syntax",
+  "standard_focus": "IEEE1364",
+  "description_zh": "位选择缺少右中括号。",
+  "top": "top",
+  "files": [
+    "unmatched_bracket.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

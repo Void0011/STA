@@ -1,0 +1,17 @@
+{
+  "id": "syntax_missing_comma_port_003",
+  "category": "syntax",
+  "description_zh": "ANSI 端口列表中两个端口之间缺少逗号。",
+  "top": "top",
+  "files": [
+    "missing_comma_port.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "port"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

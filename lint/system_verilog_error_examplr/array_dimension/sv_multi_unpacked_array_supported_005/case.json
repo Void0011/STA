@@ -1,0 +1,18 @@
+{
+  "id": "sv_multi_unpacked_array_supported_005",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "array_dimension",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "多维 unpacked array 声明的语法级支持样例。",
+  "top": "top",
+  "files": [
+    "multi_unpacked_array_supported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

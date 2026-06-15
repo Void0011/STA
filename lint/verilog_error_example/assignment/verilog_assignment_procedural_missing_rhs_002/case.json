@@ -1,0 +1,20 @@
+{
+  "id": "verilog_assignment_procedural_missing_rhs_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "assignment",
+  "standard_focus": "IEEE1364",
+  "description_zh": "过程赋值缺少右值。",
+  "top": "top",
+  "files": [
+    "procedural_missing_rhs.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

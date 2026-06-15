@@ -1,0 +1,18 @@
+{
+  "id": "sv_simple_cast_supported_004",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "array_dimension",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "简单 cast 语法级支持样例。",
+  "top": "top",
+  "files": [
+    "simple_cast_supported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

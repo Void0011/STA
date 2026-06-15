@@ -1,0 +1,17 @@
+{
+  "id": "syntax_missing_endmodule_007",
+  "category": "syntax",
+  "description_zh": "模块缺少 endmodule。",
+  "top": "top",
+  "files": [
+    "missing_endmodule.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "endmodule",
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

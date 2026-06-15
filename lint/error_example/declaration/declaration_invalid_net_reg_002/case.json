@@ -1,0 +1,16 @@
+{
+  "id": "declaration_invalid_net_reg_002",
+  "category": "declaration",
+  "description_zh": "同一声明同时使用 wire 和 reg。",
+  "top": "top",
+  "files": [
+    "invalid_net_reg.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

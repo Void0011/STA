@@ -1,0 +1,17 @@
+{
+  "id": "preprocessor_unterminated_ifdef_003",
+  "category": "preprocessor",
+  "description_zh": "条件编译块缺少 endif。",
+  "top": "top",
+  "files": [
+    "unterminated_ifdef.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "endif",
+    "directive"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

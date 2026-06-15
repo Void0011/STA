@@ -1,0 +1,20 @@
+{
+  "id": "verilog_module_port_invalid_direction_004",
+  "language": "verilog",
+  "kind": "error",
+  "category": "module_port",
+  "standard_focus": "IEEE1364",
+  "description_zh": "端口方向声明互相冲突。",
+  "top": "top",
+  "files": [
+    "invalid_direction.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

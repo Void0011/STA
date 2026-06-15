@@ -1,0 +1,20 @@
+{
+  "id": "sv_package_missing_endpackage_004",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "package_import",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "package 缺少 endpackage。",
+  "top": "top",
+  "files": [
+    "package_missing_endpackage.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "endpackage"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

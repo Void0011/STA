@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_named_output_empty_006",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "unused_unconnected",
+  "standard_focus": "IEEE1364",
+  "description_zh": "命名端口连接使用 `.out()` 空连接，导致子模块输出悬空。",
+  "top": "top",
+  "files": [
+    "named_output_empty.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

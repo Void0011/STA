@@ -1,0 +1,20 @@
+{
+  "id": "verilog_expression_missing_operand_004",
+  "language": "verilog",
+  "kind": "error",
+  "category": "expression",
+  "standard_focus": "IEEE1364",
+  "description_zh": "二元操作符右侧缺少操作数。",
+  "top": "top",
+  "files": [
+    "missing_operand.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

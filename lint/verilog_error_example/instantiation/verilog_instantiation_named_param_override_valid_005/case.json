@@ -1,0 +1,18 @@
+{
+  "id": "verilog_instantiation_named_param_override_valid_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "instantiation",
+  "standard_focus": "IEEE1364",
+  "description_zh": "合法命名参数覆盖样例，用于确认 parser 不误报。",
+  "top": "top",
+  "files": [
+    "named_param_override_valid.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": "verilog_preprocessor_elsif_without_ifdef_007",
+  "language": "verilog",
+  "kind": "error",
+  "category": "preprocessor",
+  "standard_focus": "IEEE1364",
+  "description_zh": "`elsif 没有匹配的 `ifdef/`ifndef。",
+  "top": "top",
+  "files": [
+    "elsif_without_ifdef.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "elsif"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

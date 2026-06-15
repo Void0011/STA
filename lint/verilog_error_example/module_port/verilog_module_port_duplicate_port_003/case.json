@@ -1,0 +1,21 @@
+{
+  "id": "verilog_module_port_duplicate_port_003",
+  "language": "verilog",
+  "kind": "error",
+  "category": "module_port",
+  "standard_focus": "IEEE1364",
+  "description_zh": "端口列表中重复端口名。",
+  "top": "top",
+  "files": [
+    "duplicate_port.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "duplicate",
+    "port"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

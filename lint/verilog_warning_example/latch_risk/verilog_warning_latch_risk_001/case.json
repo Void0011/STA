@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_latch_risk_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "latch_risk",
+  "standard_focus": "IEEE1364",
+  "description_zh": "组合 always 中 if 缺少 else，存在 latch 风险。",
+  "top": "top",
+  "files": [
+    "latch_risk.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,18 @@
+{
+  "id": "sv_typedef_enum_supported_002",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "enum_struct_typedef",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "typedef enum 的语法级支持样例。",
+  "top": "top",
+  "files": [
+    "typedef_enum_supported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

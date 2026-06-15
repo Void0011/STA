@@ -1,0 +1,21 @@
+{
+  "id": "verilog_generate_case_missing_endcase_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "generate",
+  "standard_focus": "IEEE1364",
+  "description_zh": "generate-case 缺少 endcase。",
+  "top": "top",
+  "files": [
+    "generate_case_missing_endcase.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "case"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

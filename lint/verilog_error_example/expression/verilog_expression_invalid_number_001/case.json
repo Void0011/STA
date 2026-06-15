@@ -1,0 +1,20 @@
+{
+  "id": "verilog_expression_invalid_number_001",
+  "language": "verilog",
+  "kind": "error",
+  "category": "expression",
+  "standard_focus": "IEEE1364",
+  "description_zh": "基数数字常量缺少实际数值。",
+  "top": "top",
+  "files": [
+    "invalid_number.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

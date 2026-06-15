@@ -1,0 +1,17 @@
+{
+  "id": "warning_port_width_005",
+  "category": "warning_like",
+  "description_zh": "模块端口连接宽度不匹配。",
+  "top": "top",
+  "files": [
+    "port_width.v"
+  ],
+  "expected_iverilog_status": "warning",
+  "expected_keywords": [
+    "expects",
+    "bits"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,18 @@
+{
+  "id": "sv_warning_interface_connection_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "interface_connection",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "interface 实例连接样例，当前只验证语法级不误报。",
+  "top": "top",
+  "files": [
+    "interface_connection.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

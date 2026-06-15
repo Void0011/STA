@@ -1,0 +1,20 @@
+{
+  "id": "sv_warning_implicit_net_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "implicit_cast_width",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "SV 文件中未声明标识符仍应提示隐式网线/拼写风险。",
+  "top": "top",
+  "files": [
+    "implicit_net.sv"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "implicit"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

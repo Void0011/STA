@@ -1,0 +1,18 @@
+{
+  "id": "sv_warning_enum_usage_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "enum_usage",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "enum typedef 使用样例，当前只验证语法级不误报。",
+  "top": "top",
+  "files": [
+    "enum_usage.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

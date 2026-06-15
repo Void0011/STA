@@ -1,0 +1,20 @@
+{
+  "id": "verilog_function_call_missing_paren_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "function_task",
+  "standard_focus": "IEEE1364",
+  "description_zh": "函数调用表达式缺少右括号。",
+  "top": "top",
+  "files": [
+    "function_call_missing_paren.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

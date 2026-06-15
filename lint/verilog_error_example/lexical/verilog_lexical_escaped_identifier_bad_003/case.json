@@ -1,0 +1,20 @@
+{
+  "id": "verilog_lexical_escaped_identifier_bad_003",
+  "language": "verilog",
+  "kind": "error",
+  "category": "lexical",
+  "standard_focus": "IEEE1364",
+  "description_zh": "转义标识符缺少空白终止，破坏赋值语法。",
+  "top": "top",
+  "files": [
+    "escaped_identifier_bad.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

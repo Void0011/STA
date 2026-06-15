@@ -1,0 +1,20 @@
+{
+  "id": "sv_inside_unsupported_001",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "syntax",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "inside 表达式当前不支持，应至少给出语法/unsupported 诊断。",
+  "top": "top",
+  "files": [
+    "inside_unsupported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "inside"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

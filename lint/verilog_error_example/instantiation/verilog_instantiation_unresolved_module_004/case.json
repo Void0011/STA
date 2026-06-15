@@ -1,0 +1,21 @@
+{
+  "id": "verilog_instantiation_unresolved_module_004",
+  "language": "verilog",
+  "kind": "error",
+  "category": "instantiation",
+  "standard_focus": "IEEE1364",
+  "description_zh": "例化了未定义模块。",
+  "top": "top",
+  "files": [
+    "unresolved_module.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "Unknown module",
+    "missing_child"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

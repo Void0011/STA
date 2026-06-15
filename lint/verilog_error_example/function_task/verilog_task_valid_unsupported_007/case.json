@@ -1,0 +1,18 @@
+{
+  "id": "verilog_task_valid_unsupported_007",
+  "language": "verilog",
+  "kind": "error",
+  "category": "function_task",
+  "standard_focus": "IEEE1364",
+  "description_zh": "合法 task/endtask 的语法级结构化支持样例。",
+  "top": "top",
+  "files": [
+    "task_valid_unsupported.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

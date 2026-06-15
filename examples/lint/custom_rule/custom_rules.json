@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "id": "CUSTOM001",
+      "severity": "warning",
+      "match": {
+        "kind": "signal_name_regex",
+        "pattern": "^tmp_"
+      },
+      "message_zh": "发现 tmp_ 前缀信号，请确认是否只是临时调试命名。",
+      "suggestion_zh": "建议使用更明确的业务命名，或在规则配置中豁免该信号。",
+      "confidence": "high"
+    }
+  ],
+  "settings": {
+    "long_comb_operator_threshold": 10
+  }
+}
+

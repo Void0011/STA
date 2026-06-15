@@ -1,0 +1,16 @@
+{
+  "id": "syntax_missing_semicolon_decl_001",
+  "category": "syntax",
+  "description_zh": "wire 声明缺少结尾分号。",
+  "top": "top",
+  "files": [
+    "missing_semicolon_decl.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

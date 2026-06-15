@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>STA-lite GUI</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>STA-lite</h1>
+        <p>本地 RTL 时序风险检查：Yosys 综合，OpenSTA 分析，生成 summary.json。</p>
+      </div>
+      <div class="status-block">
+        <span id="statusBadge" class="badge idle">空闲</span>
+        <span id="elapsed">耗时 0.0s</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel input-panel">
+        <div class="panel-title">
+          <h2>分析输入</h2>
+          <div class="inline-actions">
+            <button id="fillCounter" type="button" class="secondary">填入 counter 示例</button>
+            <button id="fillMulti" type="button" class="secondary">填入 multi_file 示例</button>
+          </div>
+        </div>
+
+        <label>
+          顶层模块
+          <input id="top" type="text" value="counter" autocomplete="off">
+        </label>
+
+        <label>
+          RTL Verilog 文件，每行一个路径或 glob
+          <textarea id="rtl" rows="4">examples/counter/counter.v</textarea>
+        </label>
+
+        <label>
+          Liberty 文件
+          <input id="liberty" type="text" value="nangate45/lib/NangateOpenCellLibrary_typical.lib" autocomplete="off">
+        </label>
+
+        <div class="form-grid two">
+          <label>
+            时钟名
+            <input id="clock" type="text" value="clk" autocomplete="off">
+          </label>
+          <label>
+            周期 ns
+            <input id="period" type="number" step="0.001" value="2.0">
+          </label>
+        </div>
+
+        <label>
+          可选 SDC 文件
+          <input id="sdc" type="text" placeholder="留空时自动生成 create_clock" autocomplete="off">
+        </label>
+
+        <label>
+          输出目录
+          <input id="outDir" type="text" value="runs/gui_counter" autocomplete="off">
+        </label>
+
+        <div class="form-grid two">
+          <label>
+            Yosys 命令
+            <input id="yosysBin" type="text" value="yosys" autocomplete="off">
+          </label>
+          <label>
+            OpenSTA 命令
+            <input id="staBin" type="text" value="sta" autocomplete="off">
+          </label>
+        </div>
+
+        <div class="cli-block">
+          <div class="cli-title">
+            <span>等效 CLI 命令</span>
+            <button id="copyCli" type="button" class="secondary">复制命令</button>
+          </div>
+          <pre id="cliCommand" class="cli-command"></pre>
+        </div>
+
+        <div class="actions">
+          <button id="runBtn" type="button" class="primary">开始分析</button>
+          <button id="stopBtn" type="button" class="danger" disabled>停止</button>
+        </div>
+
+        <div id="message" class="message"></div>
+      </section>
+
+      <section class="panel log-panel">
+        <div class="panel-title">
+          <h2>实时日志</h2>
+          <button id="clearLog" type="button" class="secondary">清空日志</button>
+        </div>
+        <pre id="log"></pre>
+      </section>
+
+      <section class="panel summary-panel">
+        <h2>结果汇总</h2>
+        <div class="summary-grid">
+          <div><span>WNS</span><strong id="wns">-</strong></div>
+          <div><span>TNS</span><strong id="tns">-</strong></div>
+          <div><span>风险等级</span><strong id="risk">-</strong></div>
+          <div><span>运行状态</span><strong id="runStatus">-</strong></div>
+        </div>
+        <dl class="paths">
+          <dt>门级网表</dt><dd id="netlistPath">-</dd>
+          <dt>summary.json</dt><dd id="summaryPath">-</dd>
+          <dt>OpenSTA 报告</dt><dd id="checksPath">-</dd>
+          <dt>风险说明</dt><dd id="riskText">-</dd>
+        </dl>
+      </section>
+
+      <section class="panel violation-panel">
+        <h2>违例与高风险提示</h2>
+        <div id="violationIntro" class="violation-intro">尚未运行分析。</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Startpoint</th>
+                <th>Endpoint</th>
+                <th>Path Group</th>
+                <th>Slack</th>
+                <th>Arrival</th>
+                <th>Required</th>
+              </tr>
+            </thead>
+            <tbody id="violationRows"></tbody>
+          </table>
+        </div>
+        <ul id="riskWarnings" class="risk-list"></ul>
+      </section>
+
+      <section class="panel lint-panel">
+        <div class="panel-title">
+          <h2>RTL Lint 检查</h2>
+          <div class="inline-actions">
+            <span id="lintElapsed" class="subtle-text">耗时 0.0s</span>
+            <button id="fillLintClean" type="button" class="secondary">填入 clean_ok 示例</button>
+          </div>
+        </div>
+
+        <div class="form-grid two">
+          <label>
+            Lint RTL 文件，每行一个路径或 glob
+            <textarea id="lintRtl" rows="4">examples/lint/clean_ok/clean_ok.sv</textarea>
+          </label>
+          <label>
+            Include 目录，每行一个
+            <textarea id="lintInclude" rows="4"></textarea>
+          </label>
+        </div>
+
+        <div class="form-grid two">
+          <label>
+            顶层模块
+            <input id="lintTop" type="text" value="clean_ok" autocomplete="off">
+          </label>
+          <label>
+            宏定义，每行一个 NAME=VALUE
+            <input id="lintDefines" type="text" placeholder="例如 SYNTHESIS=1" autocomplete="off">
+          </label>
+        </div>
+
+        <div class="form-grid two">
+          <label>
+            可选 SDC 文件
+            <input id="lintSdc" type="text" autocomplete="off">
+          </label>
+          <label>
+            自定义规则 JSON
+            <input id="lintRules" type="text" autocomplete="off">
+          </label>
+        </div>
+
+        <label>
+          Lint 输出目录
+          <input id="lintOutDir" type="text" value="runs/gui_lint_clean" autocomplete="off">
+        </label>
+
+        <div class="actions">
+          <button id="lintRunBtn" type="button" class="primary">开始 Lint</button>
+        </div>
+        <div id="lintMessage" class="message"></div>
+
+        <div class="summary-grid lint-summary-grid">
+          <div><span>错误</span><strong id="lintErrors">-</strong></div>
+          <div><span>警告</span><strong id="lintWarnings">-</strong></div>
+          <div><span>暂不支持</span><strong id="lintUnsupported">-</strong></div>
+          <div><span>Lint 状态</span><strong id="lintStatus">-</strong></div>
+        </div>
+        <dl class="paths">
+          <dt>lint_summary</dt><dd id="lintSummaryPath">-</dd>
+          <dt>风险说明</dt><dd id="lintRiskText">-</dd>
+        </dl>
+
+        <div class="lint-log-title">Lint 实时日志</div>
+        <pre id="lintLog" class="lint-log"></pre>
+
+        <div class="table-wrap lint-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>级别</th>
+                <th>规则</th>
+                <th>位置</th>
+                <th>说明</th>
+                <th>建议</th>
+              </tr>
+            </thead>
+            <tbody id="lintDiagnosticRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

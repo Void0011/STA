@@ -1,0 +1,16 @@
+{
+  "id": "procedural_bad_event_001",
+  "category": "procedural_block",
+  "description_zh": "always 事件控制缺少边沿信号。",
+  "top": "top",
+  "files": [
+    "bad_event.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

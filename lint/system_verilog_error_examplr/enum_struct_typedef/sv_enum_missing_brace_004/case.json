@@ -1,0 +1,21 @@
+{
+  "id": "sv_enum_missing_brace_004",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "enum_struct_typedef",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "typedef enum 缺少右大括号。",
+  "top": "top",
+  "files": [
+    "enum_missing_brace.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "enum",
+    "brace"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

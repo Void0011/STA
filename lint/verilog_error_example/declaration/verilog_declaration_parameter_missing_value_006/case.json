@@ -1,0 +1,20 @@
+{
+  "id": "verilog_declaration_parameter_missing_value_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "declaration",
+  "standard_focus": "IEEE1364",
+  "description_zh": "parameter 声明缺少赋值表达式。",
+  "top": "top",
+  "files": [
+    "parameter_missing_value.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,21 @@
+{
+  "id": "sv_logic_missing_semicolon_001",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "declaration_type",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "logic 声明缺少分号。",
+  "top": "top",
+  "files": [
+    "logic_missing_semicolon.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "logic",
+    "semicolon"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

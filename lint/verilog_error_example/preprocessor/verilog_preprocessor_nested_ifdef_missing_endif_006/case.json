@@ -1,0 +1,20 @@
+{
+  "id": "verilog_preprocessor_nested_ifdef_missing_endif_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "preprocessor",
+  "standard_focus": "IEEE1364",
+  "description_zh": "嵌套条件编译缺少内层 endif。",
+  "top": "top",
+  "files": [
+    "nested_ifdef_missing_endif.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "endif"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

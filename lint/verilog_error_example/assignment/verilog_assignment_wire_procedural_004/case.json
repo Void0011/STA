@@ -1,0 +1,21 @@
+{
+  "id": "verilog_assignment_wire_procedural_004",
+  "language": "verilog",
+  "kind": "error",
+  "category": "assignment",
+  "standard_focus": "IEEE1364",
+  "description_zh": "在 always 中对 wire 端口过程赋值。",
+  "top": "top",
+  "files": [
+    "wire_procedural.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "not a valid l-value",
+    "reg"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

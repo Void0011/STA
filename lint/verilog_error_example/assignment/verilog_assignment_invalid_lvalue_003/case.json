@@ -1,0 +1,21 @@
+{
+  "id": "verilog_assignment_invalid_lvalue_003",
+  "language": "verilog",
+  "kind": "error",
+  "category": "assignment",
+  "standard_focus": "IEEE1364",
+  "description_zh": "连续赋值左侧不是合法 lvalue。",
+  "top": "top",
+  "files": [
+    "invalid_lvalue.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "l-value",
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

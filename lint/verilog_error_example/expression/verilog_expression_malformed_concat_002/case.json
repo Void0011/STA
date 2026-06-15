@@ -1,0 +1,20 @@
+{
+  "id": "verilog_expression_malformed_concat_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "expression",
+  "standard_focus": "IEEE1364",
+  "description_zh": "拼接表达式缺少右大括号。",
+  "top": "top",
+  "files": [
+    "malformed_concat.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

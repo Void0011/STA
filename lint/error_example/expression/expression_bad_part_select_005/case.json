@@ -1,0 +1,16 @@
+{
+  "id": "expression_bad_part_select_005",
+  "category": "expression",
+  "description_zh": "part-select 语法缺少冒号左侧表达式。",
+  "top": "top",
+  "files": [
+    "bad_part_select.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

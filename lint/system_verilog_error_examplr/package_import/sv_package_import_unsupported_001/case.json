@@ -1,0 +1,18 @@
+{
+  "id": "sv_package_import_unsupported_001",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "package_import",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "package/import 已进入语法级支持，旧 unsupported 回归用例现在用于确认不误报。",
+  "top": "top",
+  "files": [
+    "package_import.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

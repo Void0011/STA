@@ -1,0 +1,21 @@
+{
+  "id": "verilog_lexical_unterminated_string_001",
+  "language": "verilog",
+  "kind": "error",
+  "category": "lexical",
+  "standard_focus": "IEEE1364",
+  "description_zh": "字符串字面量缺少右侧双引号。",
+  "top": "top",
+  "files": [
+    "unterminated_string.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "string"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

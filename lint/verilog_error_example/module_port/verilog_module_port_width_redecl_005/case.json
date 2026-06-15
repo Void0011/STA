@@ -1,0 +1,21 @@
+{
+  "id": "verilog_module_port_width_redecl_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "module_port",
+  "standard_focus": "IEEE1364",
+  "description_zh": "端口宽度声明和后续声明不一致。",
+  "top": "top",
+  "files": [
+    "width_redecl.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "already",
+    "declared"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,132 @@
+library(example) {
+  delay_model : table_lookup;
+  time_unit : "1ns";
+  voltage_unit : "1V";
+  current_unit : "1mA";
+  pulling_resistance_unit : "1kohm";
+  leakage_power_unit : "1nW";
+  capacitive_load_unit(1, pf);
+  input_threshold_pct_rise : 50.0;
+  input_threshold_pct_fall : 50.0;
+  output_threshold_pct_rise : 50.0;
+  output_threshold_pct_fall : 50.0;
+  slew_lower_threshold_pct_rise : 20.0;
+  slew_upper_threshold_pct_rise : 80.0;
+  slew_lower_threshold_pct_fall : 20.0;
+  slew_upper_threshold_pct_fall : 80.0;
+
+  lu_table_template(delay_template) {
+    variable_1 : input_net_transition;
+    variable_2 : total_output_net_capacitance;
+    index_1("0.01, 0.10");
+    index_2("0.01, 0.10");
+  }
+
+  cell(BUF_X1) {
+    area : 1.0;
+    pin(A) {
+      direction : input;
+      capacitance : 0.01;
+    }
+    pin(Y) {
+      direction : output;
+      function : "A";
+      max_capacitance : 1.0;
+      timing() {
+        related_pin : "A";
+        timing_sense : positive_unate;
+        cell_rise(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+        cell_fall(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+        rise_transition(delay_template) { values("0.010, 0.020", "0.020, 0.030"); }
+        fall_transition(delay_template) { values("0.010, 0.020", "0.020, 0.030"); }
+      }
+    }
+  }
+
+  cell(INV_X1) {
+    area : 1.0;
+    pin(A) {
+      direction : input;
+      capacitance : 0.01;
+    }
+    pin(Y) {
+      direction : output;
+      function : "!A";
+      max_capacitance : 1.0;
+      timing() {
+        related_pin : "A";
+        timing_sense : negative_unate;
+        cell_rise(delay_template) { values("0.030, 0.040", "0.040, 0.050"); }
+        cell_fall(delay_template) { values("0.030, 0.040", "0.040, 0.050"); }
+        rise_transition(delay_template) { values("0.010, 0.020", "0.020, 0.030"); }
+        fall_transition(delay_template) { values("0.010, 0.020", "0.020, 0.030"); }
+      }
+    }
+  }
+
+  cell(AND2_X1) {
+    area : 2.0;
+    pin(A) {
+      direction : input;
+      capacitance : 0.01;
+    }
+    pin(B) {
+      direction : input;
+      capacitance : 0.01;
+    }
+    pin(Y) {
+      direction : output;
+      function : "(A * B)";
+      max_capacitance : 1.0;
+      timing() {
+        related_pin : "A";
+        timing_sense : positive_unate;
+        cell_rise(delay_template) { values("0.060, 0.070", "0.070, 0.080"); }
+        cell_fall(delay_template) { values("0.050, 0.060", "0.060, 0.070"); }
+        rise_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+        fall_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+      }
+      timing() {
+        related_pin : "B";
+        timing_sense : positive_unate;
+        cell_rise(delay_template) { values("0.060, 0.070", "0.070, 0.080"); }
+        cell_fall(delay_template) { values("0.050, 0.060", "0.060, 0.070"); }
+        rise_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+        fall_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+      }
+    }
+  }
+
+  cell(OR2_X1) {
+    area : 2.0;
+    pin(A) {
+      direction : input;
+      capacitance : 0.01;
+    }
+    pin(B) {
+      direction : input;
+      capacitance : 0.01;
+    }
+    pin(Y) {
+      direction : output;
+      function : "(A + B)";
+      max_capacitance : 1.0;
+      timing() {
+        related_pin : "A";
+        timing_sense : positive_unate;
+        cell_rise(delay_template) { values("0.060, 0.070", "0.070, 0.080"); }
+        cell_fall(delay_template) { values("0.050, 0.060", "0.060, 0.070"); }
+        rise_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+        fall_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+      }
+      timing() {
+        related_pin : "B";
+        timing_sense : positive_unate;
+        cell_rise(delay_template) { values("0.060, 0.070", "0.070, 0.080"); }
+        cell_fall(delay_template) { values("0.050, 0.060", "0.060, 0.070"); }
+        rise_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+        fall_transition(delay_template) { values("0.020, 0.030", "0.030, 0.040"); }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "preprocessor_missing_include_001",
+  "category": "preprocessor",
+  "description_zh": "include 文件不存在。",
+  "top": "top",
+  "files": [
+    "missing_include.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "Include file",
+    "No such"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

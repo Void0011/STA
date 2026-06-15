@@ -1,0 +1,17 @@
+{
+  "id": "module_port_duplicate_port_003",
+  "category": "module_port",
+  "description_zh": "端口列表中重复端口名。",
+  "top": "top",
+  "files": [
+    "duplicate_port.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "duplicate",
+    "port"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

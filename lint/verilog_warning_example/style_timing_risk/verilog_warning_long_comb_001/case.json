@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_long_comb_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "style_timing_risk",
+  "standard_focus": "IEEE1364",
+  "description_zh": "连续赋值组合表达式较长，存在早期时序风险。",
+  "top": "top",
+  "files": [
+    "long_comb.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

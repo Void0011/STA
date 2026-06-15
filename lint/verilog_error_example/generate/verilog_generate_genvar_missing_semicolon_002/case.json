@@ -1,0 +1,21 @@
+{
+  "id": "verilog_generate_genvar_missing_semicolon_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "generate",
+  "standard_focus": "IEEE1364",
+  "description_zh": "genvar 声明缺少分号，后续 generate 结构被破坏。",
+  "top": "top",
+  "files": [
+    "genvar_missing_semicolon.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax",
+    "genvar"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

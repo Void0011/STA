@@ -1,0 +1,17 @@
+{
+  "id": "warning_select_range_003",
+  "category": "warning_like",
+  "description_zh": "常量位选择越界。",
+  "top": "top",
+  "files": [
+    "select_range.v"
+  ],
+  "expected_iverilog_status": "warning",
+  "expected_keywords": [
+    "select",
+    "range"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

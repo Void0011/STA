@@ -1,0 +1,21 @@
+{
+  "id": "verilog_warning_port_not_connected_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "port_connection",
+  "standard_focus": "IEEE1364",
+  "description_zh": "子模块输入端口未连接。",
+  "top": "top",
+  "files": [
+    "port_not_connected.v"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "dangling",
+    "port"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,43 @@
+read_liberty nangate45/lib/NangateOpenCellLibrary_typical.lib
+read_liberty nangate45/lib/NangateOpenCellLibrary_typical.lib
+read_liberty nangate45/lib/fakeram45_1024x32.lib
+read_liberty nangate45/lib/fakeram45_128x116.lib
+read_liberty nangate45/lib/fakeram45_128x256.lib
+read_liberty nangate45/lib/fakeram45_128x32.lib
+read_liberty nangate45/lib/fakeram45_2048x39.lib
+read_liberty nangate45/lib/fakeram45_256x16.lib
+read_liberty nangate45/lib/fakeram45_256x32.lib
+read_liberty nangate45/lib/fakeram45_256x34.lib
+read_liberty nangate45/lib/fakeram45_256x48.lib
+read_liberty nangate45/lib/fakeram45_256x95.lib
+read_liberty nangate45/lib/fakeram45_256x96.lib
+read_liberty nangate45/lib/fakeram45_32x32.lib
+read_liberty nangate45/lib/fakeram45_32x64.lib
+read_liberty nangate45/lib/fakeram45_512x64.lib
+read_liberty nangate45/lib/fakeram45_64x124.lib
+read_liberty nangate45/lib/fakeram45_64x15.lib
+read_liberty nangate45/lib/fakeram45_64x21.lib
+read_liberty nangate45/lib/fakeram45_64x32.lib
+read_liberty nangate45/lib/fakeram45_64x62.lib
+read_liberty nangate45/lib/fakeram45_64x64.lib
+read_liberty nangate45/lib/fakeram45_64x7.lib
+read_liberty nangate45/lib/fakeram45_64x96.lib
+read_liberty nangate45/lib/NangateOpenCellLibrary_typical.lib
+read_verilog build/top_nangate45_mapped.v
+link_design top
+create_clock -name vclk -period 1.000
+set_input_delay -clock vclk 0.050 [all_inputs]
+set_output_delay -clock vclk 0.050 [all_outputs]
+set_load 0.030 [all_outputs]
+report_checks -from [all_inputs] -to [all_outputs] -path_delay max -fields {slew cap input nets fanout} -digits 4
+report_tns
+report_wns
+read_liberty lib/example.lib
+read_verilog build/top_mapped.v
+link_design top
+create_clock -name vclk -period 1.000
+set_input_delay -clock vclk 0.050 [all_inputs]
+set_output_delay -clock vclk 0.050 [all_outputs]
+report_wns > /tmp/sta_wns_test.rpt
+report_tns > /tmp/sta_tns_test.rpt
+report_checks -from [all_inputs] -to [all_outputs] -path_delay max -digits 4 > /tmp/sta_checks_test.rpt

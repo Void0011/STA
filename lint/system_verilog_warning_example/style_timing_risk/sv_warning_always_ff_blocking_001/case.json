@@ -1,0 +1,20 @@
+{
+  "id": "sv_warning_always_ff_blocking_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "style_timing_risk",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "always_ff 中使用阻塞赋值。",
+  "top": "top",
+  "files": [
+    "always_ff_blocking.sv"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "blocking"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

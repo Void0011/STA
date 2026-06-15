@@ -1,0 +1,16 @@
+{
+  "id": "module_port_invalid_direction_004",
+  "category": "module_port",
+  "description_zh": "端口方向声明互相冲突。",
+  "top": "top",
+  "files": [
+    "invalid_direction.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

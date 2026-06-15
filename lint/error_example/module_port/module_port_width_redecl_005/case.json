@@ -1,0 +1,17 @@
+{
+  "id": "module_port_width_redecl_005",
+  "category": "module_port",
+  "description_zh": "端口宽度声明和后续声明不一致。",
+  "top": "top",
+  "files": [
+    "width_redecl.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "already",
+    "declared"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

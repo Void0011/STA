@@ -1,0 +1,20 @@
+{
+  "id": "sv_warning_port_width_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "implicit_cast_width",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "logic 端口连接宽度不匹配。",
+  "top": "top",
+  "files": [
+    "port_width.sv"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "width"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

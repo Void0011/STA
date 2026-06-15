@@ -1,0 +1,18 @@
+{
+  "id": "verilog_instantiation_ordered_param_override_valid_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "instantiation",
+  "standard_focus": "IEEE1364",
+  "description_zh": "合法位置参数覆盖样例，用于确认 parser 不误报。",
+  "top": "top",
+  "files": [
+    "ordered_param_override_valid.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

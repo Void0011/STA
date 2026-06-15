@@ -1,0 +1,24 @@
+{
+  "id": "verilog_preprocessor_include_line_mapping_invalid_008",
+  "language": "verilog",
+  "kind": "error",
+  "category": "preprocessor",
+  "standard_focus": "IEEE1364",
+  "description_zh": "include 展开后的错误应保留被 include 文件的行列信息。",
+  "top": "top",
+  "files": [
+    "top.v"
+  ],
+  "support_files": [
+    "bad_expr.vh"
+  ],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [
+    "."
+  ],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

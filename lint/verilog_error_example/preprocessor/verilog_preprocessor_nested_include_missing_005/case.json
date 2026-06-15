@@ -1,0 +1,22 @@
+{
+  "id": "verilog_preprocessor_nested_include_missing_005",
+  "language": "verilog",
+  "kind": "error",
+  "category": "preprocessor",
+  "standard_focus": "IEEE1364",
+  "description_zh": "嵌套 include 中引用缺失文件。",
+  "top": "top",
+  "files": [
+    "top.v",
+    "outer.vh"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "include",
+    "missing"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

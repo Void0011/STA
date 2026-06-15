@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_module_output_undriven_004",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "unused_unconnected",
+  "standard_focus": "IEEE1364",
+  "description_zh": "模块输出端口没有被连续赋值、过程赋值或子模块输出连接驱动。",
+  "top": "top",
+  "files": [
+    "module_output_undriven.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

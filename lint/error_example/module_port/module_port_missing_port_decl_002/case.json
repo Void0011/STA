@@ -1,0 +1,17 @@
+{
+  "id": "module_port_missing_port_decl_002",
+  "category": "module_port",
+  "description_zh": "非 ANSI 端口列表中的端口没有方向声明。",
+  "top": "top",
+  "files": [
+    "missing_port_decl.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "port",
+    "y"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

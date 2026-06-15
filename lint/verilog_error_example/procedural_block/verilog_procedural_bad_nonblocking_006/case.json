@@ -1,0 +1,20 @@
+{
+  "id": "verilog_procedural_bad_nonblocking_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "procedural_block",
+  "standard_focus": "IEEE1364",
+  "description_zh": "非阻塞赋值操作符被错误拆成 `< =`。",
+  "top": "top",
+  "files": [
+    "bad_nonblocking.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

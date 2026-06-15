@@ -1,0 +1,20 @@
+{
+  "id": "sv_always_comb_missing_end_001",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "always_procedure",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "always_comb 块缺少 end。",
+  "top": "top",
+  "files": [
+    "always_comb_missing_end.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "end"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

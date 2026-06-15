@@ -1,0 +1,20 @@
+{
+  "id": "verilog_specify_malformed_001",
+  "language": "verilog",
+  "kind": "error",
+  "category": "specify_udp",
+  "standard_focus": "IEEE1364",
+  "description_zh": "specify/specparam 语法不完整。",
+  "top": "top",
+  "files": [
+    "malformed_specify.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

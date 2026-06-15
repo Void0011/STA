@@ -1,0 +1,16 @@
+{
+  "id": "module_port_malformed_header_001",
+  "category": "module_port",
+  "description_zh": "模块头部端口列表不完整。",
+  "top": "top",
+  "files": [
+    "malformed_header.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

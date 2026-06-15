@@ -1,0 +1,16 @@
+{
+  "id": "expression_invalid_number_001",
+  "category": "expression",
+  "description_zh": "基数数字常量缺少实际数值。",
+  "top": "top",
+  "files": [
+    "invalid_number.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

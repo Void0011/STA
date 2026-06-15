@@ -1,0 +1,16 @@
+{
+  "id": "syntax_missing_semicolon_assign_002",
+  "category": "syntax",
+  "description_zh": "连续赋值语句缺少结尾分号。",
+  "top": "top",
+  "files": [
+    "missing_semicolon_assign.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

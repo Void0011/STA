@@ -1,0 +1,16 @@
+{
+  "id": "declaration_keyword_identifier_005",
+  "category": "declaration",
+  "description_zh": "使用 Verilog 关键字作为标识符。",
+  "top": "top",
+  "files": [
+    "keyword_identifier.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

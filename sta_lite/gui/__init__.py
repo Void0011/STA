@@ -1,0 +1,1 @@
+"""STA-lite GUI package."""

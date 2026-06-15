@@ -1,0 +1,18 @@
+{
+  "id": "sv_interface_instance_supported_005",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "interface_modport",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "无 modport 的 interface 实例语法级支持样例。",
+  "top": "top",
+  "files": [
+    "interface_instance_supported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

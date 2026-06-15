@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec "$root_dir/iverilog/usr/bin/iverilog" \
+  -B "$root_dir/iverilog/usr/lib/x86_64-linux-gnu/ivl" \
+  "$@"
+

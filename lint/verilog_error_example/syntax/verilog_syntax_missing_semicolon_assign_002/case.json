@@ -1,0 +1,20 @@
+{
+  "id": "verilog_syntax_missing_semicolon_assign_002",
+  "language": "verilog",
+  "kind": "error",
+  "category": "syntax",
+  "standard_focus": "IEEE1364",
+  "description_zh": "连续赋值语句缺少结尾分号。",
+  "top": "top",
+  "files": [
+    "missing_semicolon_assign.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

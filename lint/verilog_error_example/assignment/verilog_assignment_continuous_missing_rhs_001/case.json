@@ -1,0 +1,20 @@
+{
+  "id": "verilog_assignment_continuous_missing_rhs_001",
+  "language": "verilog",
+  "kind": "error",
+  "category": "assignment",
+  "standard_focus": "IEEE1364",
+  "description_zh": "连续赋值缺少右值。",
+  "top": "top",
+  "files": [
+    "continuous_missing_rhs.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

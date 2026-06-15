@@ -1,0 +1,20 @@
+{
+  "id": "verilog_expression_hierarchical_reference_bad_006",
+  "language": "verilog",
+  "kind": "error",
+  "category": "expression",
+  "standard_focus": "IEEE1364",
+  "description_zh": "层级引用缺少成员名。",
+  "top": "top",
+  "files": [
+    "hierarchical_reference_bad.v"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

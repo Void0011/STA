@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_declared_signal_unused_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "unused_unconnected",
+  "standard_focus": "IEEE1364",
+  "description_zh": "声明了内部信号但从未读取或驱动。",
+  "top": "top",
+  "files": [
+    "declared_signal_unused.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

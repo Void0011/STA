@@ -1,0 +1,17 @@
+{
+  "id": "preprocessor_undefined_macro_invalid_004",
+  "category": "preprocessor",
+  "description_zh": "使用未定义宏，导致表达式非法。",
+  "top": "top",
+  "files": [
+    "undefined_macro_invalid.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "macro",
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

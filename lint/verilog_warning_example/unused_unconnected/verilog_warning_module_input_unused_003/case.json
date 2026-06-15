@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_module_input_unused_003",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "unused_unconnected",
+  "standard_focus": "IEEE1364",
+  "description_zh": "模块输入端口声明后未被当前模块逻辑使用。",
+  "top": "top",
+  "files": [
+    "module_input_unused.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

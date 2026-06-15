@@ -1,0 +1,2 @@
+`define WIDTH 4
+

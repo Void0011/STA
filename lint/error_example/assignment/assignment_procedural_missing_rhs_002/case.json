@@ -1,0 +1,16 @@
+{
+  "id": "assignment_procedural_missing_rhs_002",
+  "category": "assignment",
+  "description_zh": "过程赋值缺少右值。",
+  "top": "top",
+  "files": [
+    "procedural_missing_rhs.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

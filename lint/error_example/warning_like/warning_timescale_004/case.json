@@ -1,0 +1,17 @@
+{
+  "id": "warning_timescale_004",
+  "category": "warning_like",
+  "description_zh": "多个模块 timescale 使用不一致或缺失。",
+  "top": "top",
+  "files": [
+    "top.v",
+    "child.v"
+  ],
+  "expected_iverilog_status": "warning",
+  "expected_keywords": [
+    "timescale"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

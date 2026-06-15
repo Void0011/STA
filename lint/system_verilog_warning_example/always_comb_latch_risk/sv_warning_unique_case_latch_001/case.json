@@ -1,0 +1,20 @@
+{
+  "id": "sv_warning_unique_case_latch_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "always_comb_latch_risk",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "unique case 缺少 default，存在组合覆盖风险。",
+  "top": "top",
+  "files": [
+    "unique_case_latch.sv"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "latch"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

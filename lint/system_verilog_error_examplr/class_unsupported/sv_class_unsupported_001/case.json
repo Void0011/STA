@@ -1,0 +1,21 @@
+{
+  "id": "sv_class_unsupported_001",
+  "language": "systemverilog",
+  "kind": "error",
+  "category": "class_unsupported",
+  "standard_focus": "SystemVerilog",
+  "description_zh": "class 当前不属于 STA-lite RTL lint 支持子集，应明确报 UNSUPPORTED_SYSTEMVERILOG。",
+  "top": "top",
+  "files": [
+    "class_unsupported.sv"
+  ],
+  "support_files": [],
+  "expected_status": "fail",
+  "expected_keywords": [
+    "UNSUPPORTED_SYSTEMVERILOG",
+    "class"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

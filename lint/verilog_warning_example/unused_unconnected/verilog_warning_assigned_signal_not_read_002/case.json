@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_assigned_signal_not_read_002",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "unused_unconnected",
+  "standard_focus": "IEEE1364",
+  "description_zh": "内部信号被赋值但从未被后续逻辑读取。",
+  "top": "top",
+  "files": [
+    "assigned_signal_not_read.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

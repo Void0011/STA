@@ -1,0 +1,16 @@
+{
+  "id": "expression_malformed_concat_002",
+  "category": "expression",
+  "description_zh": "拼接表达式缺少右大括号。",
+  "top": "top",
+  "files": [
+    "malformed_concat.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,16 @@
+{
+  "id": "declaration_range_syntax_004",
+  "category": "declaration",
+  "description_zh": "向量范围缺少右边界。",
+  "top": "top",
+  "files": [
+    "range_syntax.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

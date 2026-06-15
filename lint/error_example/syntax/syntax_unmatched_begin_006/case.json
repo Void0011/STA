@@ -1,0 +1,16 @@
+{
+  "id": "syntax_unmatched_begin_006",
+  "category": "syntax",
+  "description_zh": "always 块 begin 没有匹配 end。",
+  "top": "top",
+  "files": [
+    "unmatched_begin.v"
+  ],
+  "expected_iverilog_status": "fail",
+  "expected_keywords": [
+    "syntax"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}
