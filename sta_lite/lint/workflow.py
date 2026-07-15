@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
-from sta_lite.core.runner import UserError
+from sta_lite.core.errors import UserError
 from sta_lite.lint.builtin_rules import run_builtin_rules
 from sta_lite.lint.lexer import Lexer
 from sta_lite.lint.parser import Parser
@@ -215,4 +215,3 @@ def _attach_source_excerpts(diagnostics: list[Diagnostic]) -> list[Diagnostic]:
         if 1 <= diagnostic.line <= len(lines):
             diagnostic.source_excerpt = lines[diagnostic.line - 1].strip()
     return diagnostics
-

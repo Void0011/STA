@@ -27,7 +27,7 @@ lint/
 ## 当前规模
 
 - 历史基线：74 个 case，0 个期望检出漏报。
-- 当前规模：130 个 case，最近一次完整差分 0 个期望检出漏报。
+- 当前规模：147 个 case（Verilog 106、SystemVerilog 41），最近一次完整差分 0 个期望检出漏报。
 - Verilog error：74 个 case
 - Verilog warning：16 个 case
 - SystemVerilog error：31 个 case

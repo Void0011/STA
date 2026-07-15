@@ -1,0 +1,12 @@
+{
+  "id": "risk_ram_vector_safe_002",
+  "language": "verilog",
+  "category": "memory_inference",
+  "top": "top",
+  "files": ["ram_vector_safe.v"],
+  "description_zh": "普通 packed 向量不是 RAM 推断候选。",
+  "expected_risks": [],
+  "forbidden_risks": ["RISK_RAM_INFERENCE"],
+  "gold_available": false,
+  "gold_source": null
+}

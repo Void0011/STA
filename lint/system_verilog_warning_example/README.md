@@ -15,6 +15,7 @@
 - `enum_usage`：enum typedef 使用的语法级不误报覆盖。
 - `interface_connection`：interface 实例连接形状的语法级不误报覆盖。
 - `style_timing_risk`：`always_comb` 中长组合表达式导致早期时序风险。
+- `multi_clock`：`always_ff` 中出现两个独立时钟边沿的可疑过程控制。
 
 ## 运行
 
@@ -30,5 +31,5 @@
 
 ## 限制
 
-- 当前不做完整 SV 类型转换、signedness、enum coverage、interface connection elaboration。
+- 当前 signedness 规则只覆盖具名 packed 信号和显式 `$signed/$unsigned` 的常见表达式；仍不做完整 SV typedef、enum、packed struct、interface 或复杂 cast 类型 elaboration。
 - warning 级规则是早期风险提示，不等价于综合器或仿真器的完整诊断。

@@ -742,7 +742,18 @@ class Parser:
         if not candidates:
             return None
         name_token = candidates[-1]
-        return Signal(name=name_token.value, direction=direction, data_type=data_type, width=width, span=name_token)
+        signedness = "signed" if any(token.value == "signed" for token in tokens) else "unsigned"
+        assign_index = self._find_assignment_operator(tokens)
+        value = " ".join(token.value for token in tokens[assign_index + 1 :]) if assign_index is not None else None
+        return Signal(
+            name=name_token.value,
+            direction=direction,
+            data_type=data_type,
+            width=width,
+            signedness=signedness,
+            value=value,
+            span=name_token,
+        )
 
     def _prefix_before_decl_name(self, tokens: list[Token]) -> list[Token]:
         before_assign = tokens[: self._find_assignment_operator(tokens) or len(tokens)]

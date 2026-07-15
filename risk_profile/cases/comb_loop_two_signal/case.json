@@ -1,0 +1,12 @@
+{
+  "id": "risk_comb_loop_two_signal_001",
+  "language": "verilog",
+  "category": "combinational_loop",
+  "top": "top",
+  "files": ["comb_loop_two_signal.v"],
+  "description_zh": "两个连续赋值信号互相依赖，形成直接组合环路。",
+  "expected_risks": ["RISK_COMBINATIONAL_LOOP"],
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_scc"
+}

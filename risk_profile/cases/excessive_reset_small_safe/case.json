@@ -1,0 +1,13 @@
+{
+  "id": "risk_excessive_reset_small_safe_001",
+  "language": "verilog",
+  "category": "excessive_reset",
+  "top": "top",
+  "files": ["excessive_reset_small_safe.v"],
+  "description_zh": "单 bit 小范围异步复位不应触发过度 reset 风险。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_EXCESSIVE_RESET"],
+  "expected_severity": "none",
+  "gold_available": true,
+  "gold_source": "yosys_proc_stat_metadata"
+}

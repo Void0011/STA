@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_missing_state_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_missing_state.v"],
+  "description_zh": "声明了 DONE 状态，但转移 case 未显式处理该状态。",
+  "expected_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_issue": "declared_state_not_handled",
+  "expected_severity": "medium",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

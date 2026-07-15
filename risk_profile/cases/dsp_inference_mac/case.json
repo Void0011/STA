@@ -1,0 +1,12 @@
+{
+  "id": "risk_dsp_inference_mac_001",
+  "language": "verilog",
+  "category": "dsp_inference",
+  "top": "top",
+  "files": ["dsp_inference_mac.v"],
+  "description_zh": "宽乘加表达式是 DSP 推断候选。",
+  "expected_risks": ["RISK_DSP_INFERENCE"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

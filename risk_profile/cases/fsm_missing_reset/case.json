@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_missing_reset_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_missing_reset.v"],
+  "description_zh": "状态寄存器没有 reset/default 初始化。",
+  "expected_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_issue": "missing_reset",
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

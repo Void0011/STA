@@ -1,0 +1,100 @@
+name: STA-Lite stable release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  regression:
+    name: Linux regression
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: RTL Lint regression
+        run: ./scripts/check_lint.sh
+      - name: RTL Review and risk regression
+        run: ./scripts/check_risk.sh
+      - name: Packaging source smoke
+        run: python3 -m unittest -v tests.test_packaging_release
+
+  windows:
+    name: ${{ matrix.target }} x64 package
+    needs: regression
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [window10, window11]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          architecture: x64
+      - name: Install frozen-build dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check -r packaging/requirements-build.txt
+          choco install nsis --no-progress -y
+      - name: Build installer and run frozen smoke test
+        shell: pwsh
+        run: ./packaging/build_windows.ps1 -Target "${{ matrix.target }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sta-lite-${{ matrix.target }}-x64
+          path: install_package/${{ matrix.target }}/
+          if-no-files-found: error
+
+  ubuntu20:
+    name: Ubuntu 20.04+ x64 package
+    needs: regression
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build in Ubuntu 20.04 compatibility container
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src ubuntu:20.04 bash -c '
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y python3 python3-pip python3-dev build-essential
+            python3 -m pip install --upgrade "pip<25" "setuptools<76" wheel
+            python3 -m pip install -r packaging/requirements-build.txt
+            bash packaging/build_ubuntu20.sh
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sta-lite-ubuntu20-x64
+          path: install_package/ubuntu20/
+          if-no-files-found: error
+
+  github-release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, ubuntu20]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+      - name: Create stable release and upload packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p release-upload
+          find release-assets -type f \( -name '*.exe' -o -name '*.tar.gz' \) -exec cp '{}' release-upload/ \;
+          cd release-upload
+          sha256sum ./* > SHA256SUMS.txt
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "STA-Lite $GITHUB_REF_NAME" \
+            --notes-file ../RELEASE_NOTES.md \
+            ./*

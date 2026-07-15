@@ -1,0 +1,12 @@
+{
+  "id": "risk_arithmetic_chain_no_pipeline_001",
+  "language": "verilog",
+  "category": "arithmetic_chain_no_pipeline",
+  "top": "top",
+  "files": ["arithmetic_chain_no_pipeline.v"],
+  "description_zh": "乘法、加法和比较压在一个组合表达式中，可能缺少算术流水。",
+  "expected_risks": ["RISK_ARITH_CHAIN_NO_PIPELINE"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

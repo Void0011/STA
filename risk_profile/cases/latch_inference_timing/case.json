@@ -1,0 +1,12 @@
+{
+  "id": "risk_latch_inference_timing_001",
+  "language": "verilog",
+  "category": "latch_inference_timing",
+  "top": "top",
+  "files": ["latch_inference_timing.v"],
+  "description_zh": "组合 always 块缺少默认赋值或 else 分支，可能推断 latch。",
+  "expected_risks": ["RISK_LATCH_TIMING"],
+  "expected_severity": "high",
+  "gold_available": false,
+  "gold_source": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "risk_missing_pipeline_compare_mux_001",
+  "language": "verilog",
+  "category": "pipeline",
+  "top": "top",
+  "files": ["missing_pipeline_compare_mux.v"],
+  "description_zh": "宽比较和多级三目选择集中在单个组合边界内。",
+  "expected_risks": ["RISK_MISSING_PIPELINE"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

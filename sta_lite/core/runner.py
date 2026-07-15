@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
+from sta_lite.core.errors import UserError
 from sta_lite.parsers.reports import (
     determine_risk,
     extract_warnings,
@@ -22,10 +23,6 @@ from sta_lite.parsers.reports import (
 
 
 LogCallback = Callable[[str], None]
-
-
-class UserError(Exception):
-    """向用户展示的可恢复错误。"""
 
 
 @dataclass

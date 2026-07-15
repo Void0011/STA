@@ -1,0 +1,12 @@
+{
+  "id": "risk_wide_mux_priority_encoder_001",
+  "language": "verilog",
+  "category": "wide_mux_priority_encoder",
+  "top": "top",
+  "files": ["wide_mux_priority_encoder.v"],
+  "description_zh": "多级 if/else 选择网络可能综合成优先级 mux 链。",
+  "expected_risks": ["RISK_WIDE_MUX_PRIORITY_ENCODER"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

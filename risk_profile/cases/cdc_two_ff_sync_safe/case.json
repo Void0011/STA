@@ -1,0 +1,13 @@
+{
+  "id": "risk_cdc_two_ff_sync_safe_001",
+  "language": "verilog",
+  "category": "cdc_two_ff_sync_safe",
+  "top": "top",
+  "files": ["cdc_two_ff_sync_safe.v"],
+  "description_zh": "跨时钟域单 bit 信号通过目标域两级同步器采样，STA-lite 不应报告简单未同步 CDC。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_CDC_UNSYNC_SIGNAL"],
+  "expected_severity": "none",
+  "gold_available": false,
+  "gold_source": "metadata"
+}

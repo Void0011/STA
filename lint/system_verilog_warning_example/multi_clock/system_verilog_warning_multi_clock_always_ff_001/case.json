@@ -1,0 +1,16 @@
+{
+  "id": "system_verilog_warning_multi_clock_always_ff_001",
+  "language": "systemverilog",
+  "kind": "warning",
+  "category": "multi_clock",
+  "standard_focus": "IEEE1800 RTL subset",
+  "description_zh": "always_ff 中出现两个独立时钟边沿。",
+  "top": "top",
+  "files": ["multi_clock_always_ff.sv"],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": ["multi_clock"],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

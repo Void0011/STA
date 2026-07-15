@@ -1,0 +1,16 @@
+{
+  "id": "verilog_warning_parameter_width_safe_002",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "parameter_width",
+  "standard_focus": "IEEE1364",
+  "description_zh": "WIDTH=8 的参数派生范围合法。",
+  "top": "top",
+  "files": ["parameter_width_safe.v"],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

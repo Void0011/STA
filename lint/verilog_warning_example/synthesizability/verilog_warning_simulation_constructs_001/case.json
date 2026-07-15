@@ -1,0 +1,16 @@
+{
+  "id": "verilog_warning_simulation_constructs_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "synthesizability",
+  "standard_focus": "IEEE1364",
+  "description_zh": "可综合 RTL 中混入 initial、延时控制和仿真系统任务。",
+  "top": "top",
+  "files": ["simulation_constructs.v"],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

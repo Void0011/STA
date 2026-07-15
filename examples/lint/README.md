@@ -13,6 +13,11 @@
 - `multi_driver`：应产生 `RTL008_MULTI_DRIVER_RISK`。
 - `async_reset`：应产生 `RTL009_ASYNC_RESET_RELEASE_RISK`。
 - `constraint_mismatch`：配合 `bad_clock.sdc` 应产生 `RTL010_CONSTRAINT_CLOCK_MISMATCH`。
+- `lint/verilog_warning_example/width_range`：覆盖 `RTL013_PORT_WIDTH_MISMATCH`、`RTL014_SELECT_RANGE` 和 `RTL020_ASSIGN_WIDTH_MISMATCH`。
+- `lint/verilog_warning_example/latch_risk`：覆盖 `RTL003_LATCH_RISK` 和 `RTL021_INCOMPLETE_CASE_DEFAULT` 的正负例。
+- `lint/verilog_warning_example/synthesizability`：覆盖 `RTL025_SYNTHESIZABILITY_RISK` 的 initial/延时/仿真任务正例和普通寄存器负例。
+- `lint/verilog_warning_example/generate_elaboration`：覆盖 `RTL026_COMPLEX_GENERATE_RISK` 的参数化复杂 generate 正负例。
+- `lint/verilog_warning_example/parameter_width`：覆盖 `RTL027_PARAMETER_WIDTH_RISK` 的零参数派生负下标与合法宽度负例。
 - `default_nettype_missing`：应产生 `RTL001_DEFAULT_NETTYPE`。
 - `implicit_net`：应产生 `RTL002_IMPLICIT_NET_RISK`。
 - `preprocessor`：验证 include、define、ifdef。

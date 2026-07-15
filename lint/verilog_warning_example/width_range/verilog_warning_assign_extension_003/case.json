@@ -1,0 +1,21 @@
+{
+  "id": "verilog_warning_assign_extension_003",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "width_range",
+  "standard_focus": "IEEE1364",
+  "description_zh": "赋值目标宽度大于右侧表达式，可能发生隐式零扩展或符号扩展。",
+  "top": "top",
+  "files": [
+    "assign_extension.v"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "width",
+    "extend"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

@@ -1,0 +1,12 @@
+{
+  "id": "risk_gated_or_derived_clock_001",
+  "language": "verilog",
+  "category": "gated_or_derived_clock",
+  "top": "top",
+  "files": ["gated_or_derived_clock.v"],
+  "description_zh": "RTL 中用普通逻辑生成 gated_clk 并作为时钟使用。",
+  "expected_risks": ["RISK_GATED_OR_DERIVED_CLOCK"],
+  "expected_severity": "high",
+  "gold_available": false,
+  "gold_source": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "risk_excessive_reset_wide_sync_001",
+  "language": "verilog",
+  "category": "excessive_reset",
+  "top": "top",
+  "files": ["excessive_reset_wide_sync.v"],
+  "description_zh": "同步 reset 覆盖单个 128-bit 数据通路寄存器，达到默认 reset 位数阈值。",
+  "expected_risks": ["RISK_EXCESSIVE_RESET"],
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_proc_stat_metadata"
+}

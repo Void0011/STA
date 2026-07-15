@@ -1,0 +1,12 @@
+{
+  "id": "risk_comb_loop_always_comb_sv_001",
+  "language": "systemverilog",
+  "category": "combinational_loop",
+  "top": "top",
+  "files": ["comb_loop_always_comb_sv.sv"],
+  "description_zh": "SystemVerilog always_comb 中的过程组合环路。",
+  "expected_risks": ["RISK_COMBINATIONAL_LOOP"],
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_scc"
+}

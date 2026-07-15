@@ -1,0 +1,12 @@
+{
+  "id": "risk_high_fanout_control_001",
+  "language": "verilog",
+  "category": "high_fanout_control",
+  "top": "top",
+  "files": ["high_fanout_control.v"],
+  "description_zh": "同一个 enable 控制多个时序上下文，RTL 阶段提示潜在高扇出控制路径。",
+  "expected_risks": ["RISK_HIGH_FANOUT_CONTROL"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_incomplete_next_assign_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_incomplete_next_assign.v"],
+  "description_zh": "组合 next-state 逻辑没有默认赋值，部分 if/case 路径不赋值。",
+  "expected_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_issue": "incomplete_next_state_assignment",
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

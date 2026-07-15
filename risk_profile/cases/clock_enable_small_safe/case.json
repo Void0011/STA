@@ -1,0 +1,12 @@
+{
+  "id": "risk_clock_enable_small_safe_002",
+  "language": "verilog",
+  "category": "clock_enable",
+  "top": "top",
+  "files": ["clock_enable_small_safe.v"],
+  "description_zh": "小范围 clock enable 低于默认阈值。",
+  "expected_risks": [],
+  "forbidden_risks": ["RISK_HIGH_FANOUT_CLOCK_ENABLE"],
+  "gold_available": false,
+  "gold_source": null
+}

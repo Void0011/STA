@@ -1,0 +1,12 @@
+{
+  "id": "risk_long_comb_path_001",
+  "language": "verilog",
+  "category": "long_comb_path",
+  "top": "top",
+  "files": ["long_comb_path.v"],
+  "description_zh": "单个连续赋值中包含较多算术、比较和选择操作，可能形成 setup critical path。",
+  "expected_risks": ["RISK_LONG_COMB_PATH"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

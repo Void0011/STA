@@ -1,0 +1,13 @@
+{
+  "id": "risk_small_mux_safe_001",
+  "language": "verilog",
+  "category": "small_mux_safe",
+  "top": "top",
+  "files": ["small_mux_safe.v"],
+  "description_zh": "2 路小 mux，STA-lite 不应报告宽 mux/优先级链风险。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_WIDE_MUX_PRIORITY_ENCODER"],
+  "expected_severity": "none",
+  "gold_available": false,
+  "gold_source": "metadata"
+}

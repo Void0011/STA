@@ -1,0 +1,12 @@
+{
+  "id": "risk_pipeline_registered_safe_002",
+  "language": "verilog",
+  "category": "pipeline",
+  "top": "top",
+  "files": ["pipeline_registered_safe.v"],
+  "description_zh": "算术被连续寄存器边界拆分，不触发组合缺流水规则。",
+  "expected_risks": [],
+  "forbidden_risks": ["RISK_MISSING_PIPELINE"],
+  "gold_available": false,
+  "gold_source": null
+}

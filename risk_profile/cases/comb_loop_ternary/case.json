@@ -1,0 +1,12 @@
+{
+  "id": "risk_comb_loop_ternary_001",
+  "language": "verilog",
+  "category": "combinational_loop",
+  "top": "top",
+  "files": ["comb_loop_ternary.v"],
+  "description_zh": "三目表达式分支中读取反馈信号，形成条件组合环路。",
+  "expected_risks": ["RISK_COMBINATIONAL_LOOP"],
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_scc"
+}

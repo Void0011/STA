@@ -1,0 +1,12 @@
+{
+  "id": "risk_ram_inference_async_read_001",
+  "language": "verilog",
+  "category": "memory_inference",
+  "top": "top",
+  "files": ["ram_inference_async_read.v"],
+  "description_zh": "unpacked 存储数组采用同步写、异步读，需核对目标 RAM 推断模板。",
+  "expected_risks": ["RISK_RAM_INFERENCE"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

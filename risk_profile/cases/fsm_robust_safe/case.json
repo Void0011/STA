@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_robust_safe_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_robust_safe.v"],
+  "description_zh": "两进程 FSM，包含 reset、完整状态处理和安全 default 恢复。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_severity": "none",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

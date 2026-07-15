@@ -1,0 +1,12 @@
+{
+  "id": "risk_async_reset_release_unsync_001",
+  "language": "verilog",
+  "category": "async_reset_release_unsync",
+  "top": "top",
+  "files": ["async_reset_release_unsync.v"],
+  "description_zh": "同一个异步复位直接进入两个时钟域，未看到明显复位释放同步器。",
+  "expected_risks": ["RISK_ASYNC_RESET_RELEASE_UNSYNC"],
+  "expected_severity": "high",
+  "gold_available": false,
+  "gold_source": null
+}

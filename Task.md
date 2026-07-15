@@ -1,163 +1,172 @@
 # Current Task
 
-## Immediate Execution Summary
+## Long-Task Objective
 
-Implement the next lint improvement and then prepare the project for a v0 GitHub submission.
+Maintain every P0 and P1 case at `supported` coverage whenever it is reliably achievable in STA-lite's RTL-only product boundary.
 
-Current known result from the latest regression:
+For a case that cannot yet reach `supported`, implement the strongest reliable common subset, keep it as `partially_supported`, and show a Chinese explanation, evidence, exact limitation, and next improvement in Case Coverage. Do not leave P0/P1 cases silently stale or `not_covered` without review.
 
-- `coverage_matrix.md` still shows `verilog/warning/unused_unconnected` has no cases.
-- Some capabilities are still precise unsupported diagnostics rather than structured semantic support:
-  - Verilog `generate`
-  - Verilog `function`
-  - Verilog `task`
-  - Verilog `specify`
-  - Verilog `UDP`
-  - SystemVerilog `class`
-  - SystemVerilog assertion/covergroup
-- Previous regression had zero missed expected detections. Preserve that baseline.
-
-The current task has two phases:
-
-1. Improve lint coverage and implementation.
-2. Prepare and publish the v0 version to GitHub, including `.gitignore`.
-
-## Phase 1: Lint Improvement
-
-### Required Fix 1: Add `unused_unconnected` Warning Coverage
-
-`verilog/warning/unused_unconnected` currently has no cases. Add both corpus cases and detection support.
-
-Add examples under:
+At the same time, make STA-lite an independent software product for its core capability:
 
 ```text
-lint/verilog_warning_example/unused_unconnected/
+RTL files
+  -> STA-lite internal parser / lint / risk rules
+  -> GUI and CLI results
 ```
 
-Cover at least:
+The production core must not require Yosys, OpenSTA, Verilator, Icarus Verilog, Surelog, sv-tests, or another external EDA tool/software installation.
 
-- declared signal never used
-- assigned signal never read
-- module input never used
-- module output never driven
-- instance output left unconnected
-- named port connection left empty, such as `.out()`
+## Independent Product Boundary
 
-Each case should include `case.json` metadata and a minimal Verilog file.
+The following must work with no external EDA tool installed or discoverable on `PATH`:
 
-Update STA-lite lint so it can report these warnings with normalized diagnostics, Chinese explanation, and useful suggestions.
+- `RTL Review`
+- `RTL Lint`
+- `RTL Timing Risk Profiling`
+- `Case Coverage`
+- core CLI lint/risk commands
+- P0/P1 case detection, diagnostics, reports, and GUI display
 
-### Required Fix 2: Start Structured Verilog AST Support
+Yosys, OpenSTA, Verilator, iverilog, Surelog/UHDM, and sv-tests are allowed only as:
 
-Move these Verilog constructs from generic unsupported diagnostics toward structured AST recognition where practical:
+- development-time golden/reference tools
+- optional offline report/reference adapters
+- optional Backend Analysis integration when explicitly configured
 
-- `generate/endgenerate`
-- `genvar`
-- generate-for
-- generate-if
-- named generate block
-- `function/endfunction`
-- `task/endtask`
-- function call in expressions
+The `Yosys/OpenSTA Backend Analysis` page must never block startup or core RTL review. If its optional external tools are absent, show a clear Chinese unavailable status and retain report viewing/parsing capabilities that do not need those tools.
 
-Do not attempt full elaboration yet. Syntax-level structured AST support is enough for v0.
+No production lint/profiling rule may invoke an external tool subprocess, parse external-tool output as its primary result, or change its outcome based on tool availability.
 
-For constructs still not implemented, keep precise unsupported diagnostics:
+## Long-Task Execution Plan
 
-- `specify/endspecify`
-- `primitive/endprimitive` UDP
-- detailed specify timing checks
-- UDP table semantics
+### Phase 1: Establish The Coverage Baseline
 
-### Required Fix 3: Keep SystemVerilog Unsupported Diagnostics Precise
+1. Read the shared P0/P1 case registry, coverage matrix, rule map, test corpus, and GUI coverage model.
+2. Generate a Chinese baseline report listing every P0/P1 case with:
+   - case ID and Chinese name
+   - owner: `lint`, `profiling`, or `both`
+   - current status
+   - existing rule/test/evidence paths
+   - known limitation
+   - candidate golden/reference tool
+3. Treat every `partially_supported`, `not_covered`, and stale/unverified `supported` status as work requiring review.
+4. Do not change a status until implementation and verification evidence agree with the registry.
 
-Keep these as explicit unsupported diagnostics unless syntax-level support already exists:
+### Phase 2: Upgrade Rules And Tests
 
-- `class`
-- assertions
-- covergroup
+For each P0/P1 case, in priority order P0 then P1:
 
-The diagnostic should not be a generic parser crash. Use a category such as `UNSUPPORTED_SYSTEMVERILOG` and include Chinese guidance.
+1. Define the documented minimum supported scope.
+2. Extend STA-lite's internal parser, semantic model, lint rule, or risk rule as required.
+3. Keep the rule in its existing owner workflow; do not create GUI-only detection logic or duplicate engines.
+4. Add focused positive and negative Verilog/SystemVerilog examples under the correct corpus directory.
+5. Add or update automated tests, expected diagnostics, and Case Coverage evidence.
+6. Run regressions before promoting the case to `supported`.
 
-### Required Reports
+Use `supported` only when the documented scope, positive/negative tests, and golden/reference or justified expected-metadata comparison pass.
 
-After changes, regenerate:
+Use `partially_supported` only when the common subset is implemented and tested but specific syntax, elaboration, parameterization, or semantic patterns remain outside the implemented scope. The exact unsupported subset must be visible in Chinese.
 
-```text
-reports/lint_diff/diff_summary.json
-reports/lint_diff/missing_coverage.md
-reports/lint_diff/coverage_matrix.json
-reports/lint_diff/coverage_matrix.md
-```
+Use `unsupported_by_design` only when the requested property fundamentally needs information outside RTL-only analysis, such as physical extraction, routing, clock tree, PVT/OCV/MCMM, formal proof, or signoff CDC/RDC. Implementation difficulty alone is not a valid reason.
 
-The generated report files are verification artifacts and should not be committed unless the repository already intentionally tracks report snapshots.
+### Phase 3: Golden/Reference Comparison
 
-## Phase 2: v0 GitHub Submission Preparation
+For every case modified in this long task:
 
-After Phase 1 passes verification, prepare the project as a v0 version suitable for GitHub.
+1. Search current official project documentation, package repositories, and mature open-source implementations for an appropriate golden/reference tool.
+2. Prefer a locally reproducible Ubuntu/WSL2 CLI tool.
+3. Install only the required optional tool using a package manager or official project instructions.
+4. Record in Chinese: source URL, version, install command, exact comparison command, normalized result, and limitations.
+5. Compare normalized STA-lite diagnostics against normalized golden/reference findings.
+6. When no practical golden can express a heuristic risk policy, use versioned expected metadata and explain why it is the valid reference.
 
-### Required Cleanup
+Recommended mapping remains:
 
-- Create or update `.gitignore`.
-- Ensure local logs, generated reports, caches, temporary files, simulation outputs, and local environment files are not committed.
-- Keep source code, documentation, tests, examples, and corpus `case.json` files tracked.
-- Do not delete useful source files or examples.
+- `iverilog -g2005 -Wall -tnull` for Verilog compile/lint-style diagnostics
+- `Verilator --lint-only --Wall` for width, signedness, constructs, and lint warnings where applicable
+- Yosys frontend/process/structural passes for synthesizability, reset, loop, FSM, and structural checks where applicable
+- Surelog/UHDM or sv-tests references for practical SystemVerilog frontend coverage where available
 
-### Required Documentation
+Golden tools must be isolated from normal product runtime. Tests must skip gracefully with Chinese output if an optional tool is absent.
 
-Update Chinese README/documentation so v0 users can understand:
+### Phase 4: Standalone Product Hardening
 
-- what STA-lite lint v0 can do
-- how to run lint on a single design
-- how to run corpus regression
-- how to interpret `coverage_matrix.md`
-- why `iverilog` is used only as Verilog development-time golden
-- why `vvp` is not run
-- current limitations
-- next roadmap
+Make the core product independently runnable and test it as such.
 
-### Required Verification Before Commit
+Required work:
 
-Run the available regression flow and confirm:
+- remove or isolate any production code path that imports, executes, or depends on an external EDA tool for P0/P1 results
+- use STA-lite-owned parser/AST/rule/data-model infrastructure for production diagnostics
+- keep golden/reference adapters under clearly separated development/test modules
+- ensure GUI controllers call internal workflows and do not shell out to golden tools
+- ensure generated reports identify their producer as STA-lite, not as an external tool result
+- provide clear Chinese optional-tool status in Backend Analysis without affecting core pages
+- document the supported local runtime and packaging/startup method
 
-- `unused_unconnected` warning cases exist and are detected
-- previous zero-miss baseline is not regressed
-- Verilog examples still use `iverilog -g2005 -Wall -tnull` only as golden
-- `vvp` is not run
-- SystemVerilog metadata comparison still works
-- `coverage_matrix.md` no longer shows `verilog/warning/unused_unconnected` as `not_covered`
+### Phase 5: GUI, CLI, And Coverage Consistency
 
-If a tool or environment is missing, explain the blocker in Chinese and do not fake successful verification.
+For every final case status:
 
-### GitHub Submission
+- `RTL Review` must aggregate the same internal results from RTL Lint and RTL Timing Risk Profiling.
+- The standalone owner page must show the same rule ID, severity, file/line, confidence, evidence, Chinese message, and suggestion.
+- Case Coverage must show current status, test status, golden/reference status, evidence path, limitation, and next improvement.
+- CLI outputs and GUI results must use the same normalized diagnostic/result model.
+- No page may report a case as `supported` merely because a golden tool finds it.
 
-If verification passes:
+## Required Verification
 
-1. Run `git status --short`.
-2. Review changed files and avoid committing generated logs/reports/caches.
-3. Stage only intended files.
-4. Create a v0 commit with a concise message, for example:
+1. Run a clean-core check with external golden tools unavailable or excluded from `PATH`.
+2. Verify all core GUI pages and CLI lint/risk flows still start and run in that environment.
+3. Verify production P0/P1 results are unchanged by presence versus absence of golden tools.
+4. Run focused positive and negative tests for every changed case.
+5. Run lint_v0 and profiling regression/smoke suites after each meaningful batch.
+6. Run golden/reference comparisons for every changed case where practical; otherwise record the metadata fallback in Chinese.
+7. Verify Case Coverage counts/statuses/evidence agree with the underlying registry and tests.
+8. Verify `RTL Review` equals the union of standalone Lint and Profiling results for the same RTL configuration.
+9. Verify Backend Analysis gracefully reports missing optional tools without breaking core application behavior.
+10. Explain every blocked test, partial status, and remaining gap in Chinese.
 
-```text
-feat: prepare STA-lite lint v0
-```
+### Phase 6: Stable Cross-Platform Distribution
 
-5. Push to the configured GitHub remote and current branch if remote/authentication are available.
-6. If pushing is blocked by missing remote/authentication/network, leave the local commit ready and explain the exact blocker in Chinese.
+1. Keep the stable application version, Git tag, release notes, installer filenames, and dependency manifests synchronized.
+2. Build Windows 10 and Windows 11 x64 installers on a native Windows runner; never claim a Linux cross-build as a verified Windows EXE.
+3. Build the Ubuntu 20.04+ x86_64 package against an Ubuntu 20.04 glibc baseline.
+4. Bundle the Python runtime, GUI assets, examples, case corpus, and Case Coverage evidence, while excluding `tools/`, `nangate45/`, and all optional backend EDA binaries/data.
+5. Verify the frozen CLI version and frozen GUI `/api/case_coverage` endpoint before publishing.
+6. Publish installers and SHA-256 checksums as GitHub Release Assets only after the complete lint/risk/review regression passes.
+7. Preserve user workspaces and reports during application upgrades and uninstall.
 
-Do not overwrite or revert unrelated user changes.
+## Documentation Requirements
 
-## Acceptance Criteria
+Update Chinese documentation as the long task progresses:
 
-This task is complete when:
+- P0/P1 coverage baseline and completion status
+- supported scope for each rule
+- partial-support and unsupported reasons
+- corpus/test locations
+- golden/reference source, version, installation, and comparison commands
+- standalone runtime guarantee and optional-tool boundary
+- remaining known gaps and next priority
 
-1. `lint/verilog_warning_example/unused_unconnected/` has meaningful cases.
-2. STA-lite reports unused/unconnected warnings with normalized diagnostics.
-3. Verilog generate/function/task have initial structured syntax/AST support, or remaining gaps are precise and documented.
-4. SystemVerilog class/assertion/covergroup unsupported diagnostics remain precise.
-5. Full lint regression passes without regressing the previous zero-miss baseline.
-6. `coverage_matrix.md` no longer lists `verilog/warning/unused_unconnected` as missing coverage.
-7. `.gitignore` prevents local logs, generated reports, caches, and temporary artifacts from being committed.
-8. README/documentation is updated for v0.
-9. A clean intended git commit is created.
-10. The commit is pushed to GitHub, or a clear Chinese blocker is reported if push is not possible.
+Avoid a giant one-time report that becomes stale. Keep the case registry, coverage matrix, README documents, and generated verification summaries consistent after each completed batch.
+
+## Hard Boundaries
+
+- Do not change lint_v0 behavior unless needed for a targeted P0/P1 rule; run regressions whenever shared code changes.
+- Do not use external EDA tools as the production lint/profiling engine.
+- Do not make optional golden/reference tools mandatory for normal user installation or execution.
+- Do not claim signoff STA, physical timing prediction, formal verification, full SystemVerilog elaboration, or full CDC/RDC coverage.
+- Do not downgrade a case to `partially_supported` without implementing and testing a useful subset.
+- Do not mark a case `supported` without executable evidence.
+
+## Completion Criteria
+
+This long task is complete when:
+
+1. Every P0/P1 case has a reviewed, evidence-backed current status.
+2. Every supportable P0/P1 case reaches `supported` for its documented scope.
+3. Every remaining `partially_supported` case has a tested subset, Chinese limitation, evidence, and next improvement.
+4. Core STA-lite RTL Review/Lint/Profiling/Coverage and CLI work without any external EDA tool installed.
+5. Golden/reference tools are used only by development/test adapters and are documented for every changed case where practical.
+6. GUI, CLI, corpus, registry, coverage matrix, and tests agree on status and diagnostics.
+7. The final Chinese summary includes coverage changes, standalone-runtime verification, golden tools/commands, regression results, remaining partial cases, and next suggested step.

@@ -1,0 +1,12 @@
+{
+  "id": "risk_cdc_multibit_unsync_signal_001",
+  "language": "verilog",
+  "category": "cdc_unsync_signal",
+  "top": "top",
+  "files": ["cdc_multibit_unsync_signal.v"],
+  "description_zh": "多位总线跨时钟域直接采样，未看到同步器或握手结构。",
+  "expected_risks": ["RISK_CDC_UNSYNC_SIGNAL"],
+  "expected_severity": "high",
+  "gold_available": false,
+  "gold_source": "metadata"
+}

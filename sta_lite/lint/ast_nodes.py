@@ -13,6 +13,8 @@ class Signal:
     data_type: str | None
     span: Token
     width: str | None = None
+    signedness: str = "unsigned"
+    value: str | None = None
 
 
 @dataclass

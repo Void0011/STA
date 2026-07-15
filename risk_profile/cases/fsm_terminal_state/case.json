@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_terminal_state_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_terminal_state.v"],
+  "description_zh": "ERROR 状态只看到无条件自环，属于可安全识别的终止/死状态风险。",
+  "expected_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_issue": "obvious_terminal_state",
+  "expected_severity": "medium",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

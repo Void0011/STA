@@ -54,6 +54,37 @@ h2 {
   font-size: 14px;
 }
 
+.workflow-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+}
+
+.workflow-tab {
+  min-height: 38px;
+}
+
+.workflow-tab.active {
+  color: #ffffff;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.page-section {
+  display: none;
+}
+
+body.page-review .page-section.page-review,
+body.page-lint .page-section.page-lint,
+body.page-profiling .page-section.page-profiling,
+body.page-backend .page-section.page-backend,
+body.page-coverage .page-section.page-coverage {
+  display: block;
+}
+
 .status-block {
   display: flex;
   align-items: center;
@@ -119,6 +150,25 @@ h2 {
   grid-column: 1 / -1;
 }
 
+.risk-panel {
+  grid-column: 1 / -1;
+}
+
+.review-panel {
+  grid-column: 1 / -1;
+}
+
+.location-panel {
+  grid-column: 1 / -1;
+}
+
+.panel-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .log-panel {
   min-height: 420px;
 }
@@ -139,6 +189,11 @@ h2 {
   gap: 8px;
 }
 
+.inline-actions select {
+  width: min(280px, 100%);
+  margin-top: 0;
+}
+
 .subtle-text {
   color: var(--muted);
   font-size: 13px;
@@ -154,7 +209,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   margin-top: 6px;
   border: 1px solid var(--line);
@@ -168,6 +224,10 @@ textarea {
 textarea {
   resize: vertical;
   min-height: 92px;
+}
+
+select {
+  height: 38px;
 }
 
 .form-grid {
@@ -357,6 +417,22 @@ td {
   margin-top: 10px;
 }
 
+.risk-summary-grid {
+  margin-top: 10px;
+}
+
+.review-summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  margin-top: 10px;
+}
+
+.review-summary-grid small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .lint-log-title {
   margin-top: 14px;
   color: var(--ink);
@@ -371,6 +447,56 @@ td {
 
 .lint-table-wrap {
   margin-top: 14px;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(140px, 180px) 1fr;
+  gap: 12px;
+  align-items: end;
+  margin-top: 14px;
+}
+
+.review-filter-row {
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+}
+
+.coverage-panel {
+  grid-column: 1 / -1;
+}
+
+.coverage-summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  margin-top: 10px;
+}
+
+.coverage-filter-row {
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+}
+
+h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.roadmap-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.filter-row label {
+  margin-top: 0;
+}
+
+.filter-count {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 @media (max-width: 900px) {
@@ -392,7 +518,12 @@ td {
   }
 
   .summary-grid,
-  .form-grid.two {
+  .form-grid.two,
+  .filter-row,
+  .review-summary-grid,
+  .review-filter-row,
+  .coverage-summary-grid,
+  .coverage-filter-row {
     grid-template-columns: 1fr;
   }
 }

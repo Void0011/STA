@@ -7,6 +7,7 @@ import queue
 import threading
 import time
 import uuid
+import webbrowser
 from dataclasses import dataclass, field
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -14,12 +15,21 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from sta_lite.core.runner import AnalysisConfig, ProcessController, UserError, analyze
+from sta_lite.core.errors import UserError
+from sta_lite.core.runner import AnalysisConfig, ProcessController, analyze
+from sta_lite.core.tool_status import backend_tool_status
 from sta_lite.lint.workflow import LintConfig, run_lint
 from sta_lite.parsers.reports import read_text
+from sta_lite.review.case_registry import case_registry, coverage_summary
+from sta_lite.review.coverage import p0_coverage, p0_coverage_summary, p1_roadmap, report_location_status
+from sta_lite.review.workflow import ReviewConfig, run_review
+from sta_lite.risk.workflow import RiskConfig, run_risk
+from sta_lite.resources import resource_path, resource_root
 
 
-STATIC_DIR = Path(__file__).resolve().parent / "static"
+STATIC_DIR = resource_path("sta_lite", "gui", "static")
+PROJECT_ROOT = resource_root()
+RISK_CASES_ROOT = PROJECT_ROOT / "risk_profile" / "cases"
 
 
 @dataclass
@@ -293,6 +303,230 @@ class LintJobManager:
         )
 
 
+@dataclass
+class RiskGuiJob:
+    job_id: str
+    config: RiskConfig
+    events: "queue.Queue[dict[str, Any]]" = field(default_factory=queue.Queue)
+    status: str = "queued"
+    summary: dict[str, Any] | None = None
+    error: str | None = None
+    started_at: float = field(default_factory=time.monotonic)
+    finished_at: float | None = None
+
+    def elapsed(self) -> float:
+        end = self.finished_at if self.finished_at is not None else time.monotonic()
+        return max(0.0, end - self.started_at)
+
+
+class RiskJobManager:
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._jobs: dict[str, RiskGuiJob] = {}
+
+    def create(self, payload: dict[str, Any]) -> RiskGuiJob:
+        config = self._config_from_payload(payload)
+        job = RiskGuiJob(job_id=uuid.uuid4().hex[:12], config=config)
+        with self._lock:
+            self._jobs[job.job_id] = job
+        thread = threading.Thread(target=self._run_job, args=(job,), daemon=True)
+        thread.start()
+        return job
+
+    def get(self, job_id: str) -> RiskGuiJob | None:
+        with self._lock:
+            return self._jobs.get(job_id)
+
+    def snapshot(self, job: RiskGuiJob) -> dict[str, Any]:
+        return {
+            "job_id": job.job_id,
+            "status": job.status,
+            "elapsed_seconds": round(job.elapsed(), 3),
+            "summary": job.summary,
+            "error": job.error,
+            "out_dir": str(Path(job.config.out_dir).resolve()),
+        }
+
+    def _run_job(self, job: RiskGuiJob) -> None:
+        job.status = "running"
+        job.events.put({"type": "status", "status": "running", "message": "RTL 时序风险分析运行中。"})
+
+        def on_log(line: str) -> None:
+            job.events.put({"type": "log", "line": line, "elapsed_seconds": round(job.elapsed(), 3)})
+
+        try:
+            summary = run_risk(job.config, on_log=on_log)
+            job.summary = summary
+            job.status = "success"
+            job.finished_at = time.monotonic()
+            job.events.put({"type": "summary", "summary": summary, "elapsed_seconds": round(job.elapsed(), 3)})
+        except UserError as exc:
+            job.error = str(exc)
+            job.status = "failure"
+            job.finished_at = time.monotonic()
+            job.summary = self._read_summary_if_exists(job)
+            job.events.put({"type": "error", "message": job.error, "summary": job.summary, "elapsed_seconds": round(job.elapsed(), 3)})
+        except Exception as exc:  # noqa: BLE001 - GUI must surface unexpected failures.
+            job.error = f"内部错误：{exc}"
+            job.status = "failure"
+            job.finished_at = time.monotonic()
+            job.summary = self._read_summary_if_exists(job)
+            job.events.put({"type": "error", "message": job.error, "summary": job.summary, "elapsed_seconds": round(job.elapsed(), 3)})
+
+    def _read_summary_if_exists(self, job: RiskGuiJob) -> dict[str, Any] | None:
+        summary_path = Path(job.config.out_dir) / "risk_summary.json"
+        try:
+            text = read_text(summary_path)
+            return json.loads(text) if text else None
+        except json.JSONDecodeError:
+            return None
+
+    def _config_from_payload(self, payload: dict[str, Any]) -> RiskConfig:
+        rtl = _split_path_list(payload.get("rtl") or [])
+        include_dirs = _split_path_list(payload.get("include_dirs") or [])
+        define_items = _split_path_list(payload.get("defines") or [])
+        top = (payload.get("top") or "").strip() or None
+        out_dir = (payload.get("out_dir") or "").strip()
+        sdc_file = (payload.get("sdc_file") or "").strip() or None
+        gold_dir = (payload.get("gold_dir") or "").strip() or None
+        if not rtl:
+            raise UserError("请至少填写一个 RTL Verilog/SystemVerilog 文件或 glob。")
+        if not out_dir:
+            raise UserError("请填写 RTL 时序风险分析输出目录。")
+        defines: dict[str, str] = {}
+        for item in define_items:
+            if "=" in item:
+                name, value = item.split("=", 1)
+            else:
+                name, value = item, "1"
+            name = name.strip()
+            if not name:
+                raise UserError("宏定义中存在空宏名。")
+            defines[name] = value
+        return RiskConfig(
+            rtl=rtl,
+            out_dir=out_dir,
+            top=top,
+            sdc_file=sdc_file,
+            include_dirs=include_dirs,
+            defines=defines,
+            gold_dir=gold_dir or "risk_profile/gold/opensta",
+        )
+
+
+@dataclass
+class ReviewGuiJob:
+    job_id: str
+    config: ReviewConfig
+    events: "queue.Queue[dict[str, Any]]" = field(default_factory=queue.Queue)
+    status: str = "queued"
+    summary: dict[str, Any] | None = None
+    error: str | None = None
+    started_at: float = field(default_factory=time.monotonic)
+    finished_at: float | None = None
+
+    def elapsed(self) -> float:
+        end = self.finished_at if self.finished_at is not None else time.monotonic()
+        return max(0.0, end - self.started_at)
+
+
+class ReviewJobManager:
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._jobs: dict[str, ReviewGuiJob] = {}
+
+    def create(self, payload: dict[str, Any]) -> ReviewGuiJob:
+        config = self._config_from_payload(payload)
+        job = ReviewGuiJob(job_id=uuid.uuid4().hex[:12], config=config)
+        with self._lock:
+            self._jobs[job.job_id] = job
+        thread = threading.Thread(target=self._run_job, args=(job,), daemon=True)
+        thread.start()
+        return job
+
+    def get(self, job_id: str) -> ReviewGuiJob | None:
+        with self._lock:
+            return self._jobs.get(job_id)
+
+    def snapshot(self, job: ReviewGuiJob) -> dict[str, Any]:
+        return {
+            "job_id": job.job_id,
+            "status": job.status,
+            "elapsed_seconds": round(job.elapsed(), 3),
+            "summary": job.summary,
+            "error": job.error,
+            "out_dir": str(Path(job.config.out_dir).resolve()),
+        }
+
+    def _run_job(self, job: ReviewGuiJob) -> None:
+        job.status = "running"
+        job.events.put({"type": "status", "status": "running", "message": "RTL Review 运行中。"})
+
+        def on_log(line: str) -> None:
+            job.events.put({"type": "log", "line": line, "elapsed_seconds": round(job.elapsed(), 3)})
+
+        try:
+            summary = run_review(job.config, on_log=on_log)
+            job.summary = summary
+            job.status = str(summary.get("status") or "success")
+            job.finished_at = time.monotonic()
+            job.events.put({"type": "summary", "summary": summary, "elapsed_seconds": round(job.elapsed(), 3)})
+        except UserError as exc:
+            job.error = str(exc)
+            job.status = "failure"
+            job.finished_at = time.monotonic()
+            job.summary = self._read_summary_if_exists(job)
+            job.events.put({"type": "error", "message": job.error, "summary": job.summary, "elapsed_seconds": round(job.elapsed(), 3)})
+        except Exception as exc:  # noqa: BLE001 - GUI must surface unexpected failures.
+            job.error = f"内部错误：{exc}"
+            job.status = "failure"
+            job.finished_at = time.monotonic()
+            job.summary = self._read_summary_if_exists(job)
+            job.events.put({"type": "error", "message": job.error, "summary": job.summary, "elapsed_seconds": round(job.elapsed(), 3)})
+
+    def _read_summary_if_exists(self, job: ReviewGuiJob) -> dict[str, Any] | None:
+        summary_path = Path(job.config.out_dir) / "review_summary.json"
+        try:
+            text = read_text(summary_path)
+            return json.loads(text) if text else None
+        except json.JSONDecodeError:
+            return None
+
+    def _config_from_payload(self, payload: dict[str, Any]) -> ReviewConfig:
+        rtl = _split_path_list(payload.get("rtl") or [])
+        include_dirs = _split_path_list(payload.get("include_dirs") or [])
+        define_items = _split_path_list(payload.get("defines") or [])
+        top = (payload.get("top") or "").strip() or None
+        out_dir = (payload.get("out_dir") or "").strip()
+        sdc_file = (payload.get("sdc_file") or "").strip() or None
+        rules_file = (payload.get("rules_file") or "").strip() or None
+        gold_dir = (payload.get("gold_dir") or "").strip() or None
+        if not rtl:
+            raise UserError("请至少填写一个 RTL Verilog/SystemVerilog 文件或 glob。")
+        if not out_dir:
+            raise UserError("请填写 RTL Review 输出目录。")
+        defines: dict[str, str] = {}
+        for item in define_items:
+            if "=" in item:
+                name, value = item.split("=", 1)
+            else:
+                name, value = item, "1"
+            name = name.strip()
+            if not name:
+                raise UserError("宏定义中存在空宏名。")
+            defines[name] = value
+        return ReviewConfig(
+            rtl=rtl,
+            out_dir=out_dir,
+            top=top,
+            sdc_file=sdc_file,
+            include_dirs=include_dirs,
+            defines=defines,
+            rules_file=rules_file,
+            gold_dir=gold_dir,
+        )
+
+
 def _split_path_list(value: Any) -> list[str]:
     if isinstance(value, str):
         return [item.strip() for item in value.replace(",", "\n").splitlines() if item.strip()]
@@ -301,8 +535,39 @@ def _split_path_list(value: Any) -> list[str]:
     return []
 
 
+def discover_risk_cases(root: Path = RISK_CASES_ROOT) -> list[dict[str, Any]]:
+    cases: list[dict[str, Any]] = []
+    if not root.is_dir():
+        return cases
+    for case_json in sorted(root.glob("*/case.json")):
+        case_dir = case_json.parent
+        try:
+            meta = json.loads(case_json.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        files = meta.get("files") if isinstance(meta.get("files"), list) else []
+        sdc = meta.get("sdc") if isinstance(meta.get("sdc"), str) else ""
+        cases.append(
+            {
+                "id": str(meta.get("id") or case_dir.name),
+                "category": str(meta.get("category") or case_dir.name),
+                "language": str(meta.get("language") or ""),
+                "top": str(meta.get("top") or ""),
+                "description_zh": str(meta.get("description_zh") or ""),
+                "expected_risks": [str(item) for item in meta.get("expected_risks", []) if isinstance(item, str)],
+                "case_dir": str(case_dir),
+                "files": [str(case_dir / str(item)) for item in files],
+                "sdc_file": str(case_dir / sdc) if sdc else "",
+                "out_dir": str(Path("runs") / f"gui_risk_{case_dir.name}"),
+            }
+        )
+    return cases
+
+
 MANAGER = JobManager()
 LINT_MANAGER = LintJobManager()
+RISK_MANAGER = RiskJobManager()
+REVIEW_MANAGER = ReviewJobManager()
 
 
 class StaLiteGuiHandler(BaseHTTPRequestHandler):
@@ -325,11 +590,45 @@ class StaLiteGuiHandler(BaseHTTPRequestHandler):
         if parsed.path == "/api/lint_events":
             self._handle_lint_events(parsed.query)
             return
+        if parsed.path == "/api/risk_events":
+            self._handle_risk_events(parsed.query)
+            return
+        if parsed.path == "/api/review_events":
+            self._handle_review_events(parsed.query)
+            return
+        if parsed.path == "/api/risk_cases":
+            self._send_json({"cases": discover_risk_cases()})
+            return
+        if parsed.path == "/api/backend_status":
+            query = parse_qs(parsed.query)
+            yosys_bin = str(query.get("yosys", ["yosys"])[0] or "yosys")
+            sta_bin = str(query.get("sta", ["sta"])[0] or "sta")
+            self._send_json(backend_tool_status(yosys_bin, sta_bin))
+            return
+        if parsed.path in {"/api/review_coverage", "/api/case_coverage"}:
+            cases = case_registry()
+            self._send_json(
+                {
+                    "cases": cases,
+                    "summary": coverage_summary(cases),
+                    "p0_coverage": p0_coverage(),
+                    "p0_coverage_summary": p0_coverage_summary(),
+                    "p1_roadmap": p1_roadmap(),
+                    "report_location_status": report_location_status(),
+                }
+            )
+            return
         if parsed.path.startswith("/api/jobs/"):
             self._handle_job(parsed.path.rsplit("/", 1)[-1])
             return
         if parsed.path.startswith("/api/lint_jobs/"):
             self._handle_lint_job(parsed.path.rsplit("/", 1)[-1])
+            return
+        if parsed.path.startswith("/api/risk_jobs/"):
+            self._handle_risk_job(parsed.path.rsplit("/", 1)[-1])
+            return
+        if parsed.path.startswith("/api/review_jobs/"):
+            self._handle_review_job(parsed.path.rsplit("/", 1)[-1])
             return
         self._send_json({"error": "未找到请求的资源。"}, status=HTTPStatus.NOT_FOUND)
 
@@ -340,6 +639,12 @@ class StaLiteGuiHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/api/lint_run":
             self._handle_lint_run()
+            return
+        if parsed.path == "/api/risk_run":
+            self._handle_risk_run()
+            return
+        if parsed.path == "/api/review_run":
+            self._handle_review_run()
             return
         if parsed.path.startswith("/api/stop/"):
             job_id = parsed.path.rsplit("/", 1)[-1]
@@ -365,6 +670,22 @@ class StaLiteGuiHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # noqa: BLE001 - show actionable GUI error.
             self._send_json({"error": f"启动 RTL Lint 失败：{exc}"}, status=HTTPStatus.BAD_REQUEST)
 
+    def _handle_risk_run(self) -> None:
+        try:
+            payload = self._read_json()
+            job = RISK_MANAGER.create(payload)
+            self._send_json(RISK_MANAGER.snapshot(job), status=HTTPStatus.CREATED)
+        except Exception as exc:  # noqa: BLE001 - show actionable GUI error.
+            self._send_json({"error": f"启动 RTL 时序风险分析失败：{exc}"}, status=HTTPStatus.BAD_REQUEST)
+
+    def _handle_review_run(self) -> None:
+        try:
+            payload = self._read_json()
+            job = REVIEW_MANAGER.create(payload)
+            self._send_json(REVIEW_MANAGER.snapshot(job), status=HTTPStatus.CREATED)
+        except Exception as exc:  # noqa: BLE001 - show actionable GUI error.
+            self._send_json({"error": f"启动 RTL Review 失败：{exc}"}, status=HTTPStatus.BAD_REQUEST)
+
     def _handle_job(self, job_id: str) -> None:
         job = MANAGER.get(job_id)
         if not job:
@@ -378,6 +699,20 @@ class StaLiteGuiHandler(BaseHTTPRequestHandler):
             self._send_json({"error": "找不到该 RTL Lint 任务。"}, status=HTTPStatus.NOT_FOUND)
             return
         self._send_json(LINT_MANAGER.snapshot(job))
+
+    def _handle_risk_job(self, job_id: str) -> None:
+        job = RISK_MANAGER.get(job_id)
+        if not job:
+            self._send_json({"error": "找不到该 RTL 时序风险分析任务。"}, status=HTTPStatus.NOT_FOUND)
+            return
+        self._send_json(RISK_MANAGER.snapshot(job))
+
+    def _handle_review_job(self, job_id: str) -> None:
+        job = REVIEW_MANAGER.get(job_id)
+        if not job:
+            self._send_json({"error": "找不到该 RTL Review 任务。"}, status=HTTPStatus.NOT_FOUND)
+            return
+        self._send_json(REVIEW_MANAGER.snapshot(job))
 
     def _handle_events(self, query: str) -> None:
         params = parse_qs(query)
@@ -411,6 +746,62 @@ class StaLiteGuiHandler(BaseHTTPRequestHandler):
         params = parse_qs(query)
         job_id = (params.get("id") or [""])[0]
         job = LINT_MANAGER.get(job_id)
+        if not job:
+            self.send_response(HTTPStatus.NOT_FOUND)
+            self.end_headers()
+            return
+
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.end_headers()
+
+        while True:
+            try:
+                event = job.events.get(timeout=1.0)
+            except queue.Empty:
+                event = {
+                    "type": "elapsed",
+                    "elapsed_seconds": round(job.elapsed(), 3),
+                    "status": job.status,
+                }
+            self._write_sse(event["type"], event)
+            if event["type"] in {"summary", "error"}:
+                break
+
+    def _handle_risk_events(self, query: str) -> None:
+        params = parse_qs(query)
+        job_id = (params.get("id") or [""])[0]
+        job = RISK_MANAGER.get(job_id)
+        if not job:
+            self.send_response(HTTPStatus.NOT_FOUND)
+            self.end_headers()
+            return
+
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.end_headers()
+
+        while True:
+            try:
+                event = job.events.get(timeout=1.0)
+            except queue.Empty:
+                event = {
+                    "type": "elapsed",
+                    "elapsed_seconds": round(job.elapsed(), 3),
+                    "status": job.status,
+                }
+            self._write_sse(event["type"], event)
+            if event["type"] in {"summary", "error"}:
+                break
+
+    def _handle_review_events(self, query: str) -> None:
+        params = parse_qs(query)
+        job_id = (params.get("id") or [""])[0]
+        job = REVIEW_MANAGER.get(job_id)
         if not job:
             self.send_response(HTTPStatus.NOT_FOUND)
             self.end_headers()
@@ -473,10 +864,28 @@ class StaLiteGuiHandler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
 
-def run_server(host: str = "127.0.0.1", port: int = 8765) -> None:
-    try:
-        server = ThreadingHTTPServer((host, port), StaLiteGuiHandler)
-    except OSError as exc:
+def run_server(
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    *,
+    open_browser: bool = False,
+    probe_ports: int = 0,
+) -> None:
+    server = None
+    selected_port = port
+    last_error: OSError | None = None
+    for candidate in range(port, port + max(0, probe_ports) + 1):
+        try:
+            server = ThreadingHTTPServer((host, candidate), StaLiteGuiHandler)
+            selected_port = candidate
+            break
+        except OSError as exc:
+            last_error = exc
+            if exc.errno == errno.EADDRINUSE and candidate < port + max(0, probe_ports):
+                continue
+            break
+    if server is None:
+        exc = last_error or OSError("未知监听错误")
         if exc.errno == errno.EADDRINUSE:
             raise UserError(
                 f"GUI 启动失败：{host}:{port} 已被占用。"
@@ -485,12 +894,14 @@ def run_server(host: str = "127.0.0.1", port: int = 8765) -> None:
         if exc.errno in {errno.EACCES, errno.EPERM}:
             raise UserError(
                 f"GUI 启动失败：当前环境不允许监听 {host}:{port}。"
-                "请确认在 WSL2 终端直接运行，或换用 127.0.0.1 和普通用户端口。"
+                "请换用 127.0.0.1 和普通用户端口，或检查本机安全策略。"
             ) from exc
         raise UserError(f"GUI 启动失败：无法监听 {host}:{port}：{exc}") from exc
-    url = f"http://{host}:{port}/"
+    url = f"http://{host}:{selected_port}/"
     print(f"[sta-lite] GUI 已启动：{url}", flush=True)
     print("[sta-lite] 按 Ctrl+C 停止服务。", flush=True)
+    if open_browser:
+        threading.Timer(0.25, webbrowser.open, args=(url,)).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -503,8 +914,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="启动 STA-lite 本地 Web GUI 服务")
     parser.add_argument("--host", default="127.0.0.1", help="监听地址")
     parser.add_argument("--port", type=int, default=8765, help="监听端口")
+    parser.add_argument("--open-browser", action="store_true", help="启动后自动打开默认浏览器")
     args = parser.parse_args()
-    run_server(host=args.host, port=args.port)
+    run_server(host=args.host, port=args.port, open_browser=args.open_browser)
     return 0
 
 

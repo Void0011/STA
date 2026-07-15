@@ -1,0 +1,16 @@
+{
+  "id": "verilog_warning_simple_generate_safe_002",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "generate_elaboration",
+  "standard_focus": "IEEE1364",
+  "description_zh": "无参数分支和具名层次的简单 generate 包装不属于复杂 elaboration。",
+  "top": "top",
+  "files": ["simple_generate_safe.v"],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

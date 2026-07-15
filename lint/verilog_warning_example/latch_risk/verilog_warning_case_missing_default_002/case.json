@@ -1,0 +1,21 @@
+{
+  "id": "verilog_warning_case_missing_default_002",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "latch_risk",
+  "standard_focus": "IEEE1364",
+  "description_zh": "组合 case 缺少 default 且没有默认赋值，存在 latch 风险。",
+  "top": "top",
+  "files": [
+    "case_missing_default.v"
+  ],
+  "support_files": [],
+  "expected_status": "warning",
+  "expected_keywords": [
+    "latch",
+    "default"
+  ],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

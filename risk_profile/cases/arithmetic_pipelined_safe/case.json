@@ -1,0 +1,13 @@
+{
+  "id": "risk_arithmetic_pipelined_safe_001",
+  "language": "verilog",
+  "category": "arithmetic_pipelined_safe",
+  "top": "top",
+  "files": ["arithmetic_pipelined_safe.v"],
+  "description_zh": "乘法和后级加法之间存在寄存器边界，STA-lite 不应报告组合算术链缺流水。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_ARITH_CHAIN_NO_PIPELINE"],
+  "expected_severity": "none",
+  "gold_available": false,
+  "gold_source": "metadata"
+}

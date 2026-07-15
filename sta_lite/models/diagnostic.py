@@ -30,6 +30,7 @@ class Diagnostic:
     suggestion_zh: str
     confidence: str = "medium"
     source_excerpt: str | None = None
+    evidence: dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
         if self.severity not in VALID_SEVERITIES:
@@ -52,6 +53,7 @@ class Diagnostic:
         suggestion_zh: str,
         confidence: str = "medium",
         source_excerpt: str | None = None,
+        evidence: dict[str, Any] | None = None,
     ) -> "Diagnostic":
         return cls(
             tool="sta_lite_lint",
@@ -66,10 +68,11 @@ class Diagnostic:
             suggestion_zh=suggestion_zh,
             confidence=confidence,
             source_excerpt=source_excerpt,
+            evidence=evidence,
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "tool": self.tool,
             "severity": self.severity,
             "rule": self.rule,
@@ -83,6 +86,9 @@ class Diagnostic:
             "confidence": self.confidence,
             "source_excerpt": self.source_excerpt,
         }
+        if self.evidence:
+            result["evidence"] = self.evidence
+        return result
 
 
 def count_by_severity(diagnostics: list[Diagnostic]) -> dict[str, int]:
@@ -91,4 +97,3 @@ def count_by_severity(diagnostics: list[Diagnostic]) -> dict[str, int]:
         "warning": sum(1 for item in diagnostics if item.severity == "warning"),
         "info": sum(1 for item in diagnostics if item.severity == "info"),
     }
-

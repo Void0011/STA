@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast as py_ast
 import re
 from pathlib import Path
 
@@ -58,7 +59,15 @@ def run_builtin_rules(
     diagnostics.extend(_rule_unresolved_instances(design))
     diagnostics.extend(_rule_instance_port_connections(design))
     diagnostics.extend(_rule_constant_select_range(design))
+    diagnostics.extend(_rule_assignment_width_mismatch(design))
+    diagnostics.extend(_rule_xprop_casex_casez(design))
+    diagnostics.extend(_rule_signed_unsigned(design))
+    diagnostics.extend(_rule_multi_clock_always(design))
+    diagnostics.extend(_rule_synthesizability(design))
+    diagnostics.extend(_rule_complex_generate(design))
+    diagnostics.extend(_rule_parameter_width(design))
     diagnostics.extend(_rule_latch_risk(design))
+    diagnostics.extend(_rule_incomplete_case_style(design))
     diagnostics.extend(_rule_gated_clock(design))
     diagnostics.extend(_rule_long_comb(design, threshold))
     diagnostics.extend(_rule_blocking_in_seq(design))
@@ -68,6 +77,260 @@ def run_builtin_rules(
     diagnostics.extend(_rule_unused_unconnected(design, context))
     if sdc_file:
         diagnostics.extend(_rule_constraint_clock_mismatch(design, top, sdc_file))
+    return diagnostics
+
+
+def _rule_synthesizability(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    simulation_tasks = {"$display", "$write", "$monitor", "$finish", "$stop", "$time", "$random"}
+    for module in design.modules:
+        tokens = module.body_tokens
+        for index, token in enumerate(tokens):
+            kind: str | None = None
+            if token.value == "initial":
+                kind = "initial_block"
+            elif token.value in simulation_tasks:
+                kind = "simulation_system_task"
+            elif token.value == "#" and index + 1 < len(tokens) and tokens[index + 1].kind == "number":
+                kind = "delay_control"
+            if kind is None:
+                continue
+            diagnostics.append(
+                Diagnostic.make(
+                    severity="warning",
+                    rule="RTL025_SYNTHESIZABILITY_RISK",
+                    category="synthesizability",
+                    file=token.file,
+                    line=token.line,
+                    column=token.column,
+                    message=f"simulation-oriented construct: {token.value}",
+                    message_zh=f"模块 `{module.name}` 使用仿真导向构造 `{token.value}`，常见综合流程可能忽略或拒绝该语义。",
+                    suggestion_zh="请把 testbench/仿真行为移出可综合 RTL；若工具明确支持该构造，请在项目约束中记录适用范围。",
+                    confidence="high",
+                    evidence={"construct": token.value, "construct_kind": kind},
+                )
+            )
+    return diagnostics
+
+
+def _rule_complex_generate(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        parameter_names = set(module.parameters)
+        for block in module.generate_blocks:
+            values = [token.value for token in block.body_tokens]
+            parameter_refs = sorted(parameter_names & {token.value for token in block.body_tokens if token.kind == "identifier"})
+            branch_count = values.count("for") + values.count("if") + values.count("case")
+            nested_depth = _max_generate_begin_depth(block.body_tokens)
+            if branch_count < 2 and not (parameter_refs and branch_count >= 1):
+                continue
+            diagnostics.append(
+                Diagnostic.make(
+                    severity="warning",
+                    rule="RTL026_COMPLEX_GENERATE_RISK",
+                    category="generate_elaboration",
+                    file=block.span.file,
+                    line=block.span.line,
+                    column=block.span.column,
+                    message="complex parameter-dependent generate structure",
+                    message_zh=f"模块 `{module.name}` 的 generate 包含 {branch_count} 个条件/循环结构，并引用参数 {parameter_refs or '无'}，elaboration 后层次和连接可能明显变化。",
+                    suggestion_zh="建议为关键参数组合建立独立 lint 用例，并保持 generate 块命名、边界宽度和实例连接清晰。",
+                    confidence="medium",
+                    evidence={"generate_kind": block.kind, "branch_count": branch_count, "max_begin_depth": nested_depth, "parameter_references": parameter_refs},
+                )
+            )
+    return diagnostics
+
+
+def _rule_parameter_width(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        parameters = _parameter_values(module)
+        for signal in _module_symbols(module).values():
+            if not signal.width or not any(name in signal.width for name in parameters):
+                continue
+            bounds = _evaluate_range_text(signal.width, parameters)
+            if bounds is None:
+                continue
+            left, right = bounds
+            width = abs(left - right) + 1
+            suspicious = width <= 0 or left < 0 or right < 0 or width > 65536
+            if not suspicious:
+                continue
+            diagnostics.append(
+                Diagnostic.make(
+                    severity="warning",
+                    rule="RTL027_PARAMETER_WIDTH_RISK",
+                    category="parameter_width",
+                    file=signal.span.file,
+                    line=signal.span.line,
+                    column=signal.span.column,
+                    message=f"suspicious parameter-derived width: {signal.width}",
+                    message_zh=f"信号 `{signal.name}` 的参数派生范围 `{signal.width}` 求值为 [{left}:{right}]（宽度 {width}），存在负下标、零/异常宽度风险。",
+                    suggestion_zh="请限制参数合法范围，并用 elaboration-time assertion 或明确 localparam 检查宽度大于零。",
+                    confidence="high",
+                    evidence={"range": signal.width, "evaluated_left": left, "evaluated_right": right, "evaluated_width": width, "parameter_values": parameters},
+                )
+            )
+    return diagnostics
+
+
+def _rule_xprop_casex_casez(design: Design) -> list[Diagnostic]:
+    """Report wildcard case forms without treating ordinary case as a risk."""
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        for block in module.always_blocks:
+            tokens = block.body_tokens
+            for index, token in enumerate(tokens):
+                if token.value not in {"casex", "casez"}:
+                    continue
+                selector = _case_selector(tokens, index)
+                wildcard_items = _case_wildcard_items(tokens, index)
+                if token.value == "casex":
+                    diagnostics.append(
+                        Diagnostic.make(
+                            severity="warning",
+                            rule="RTL022_CASEX_CASEZ_XPROP_RISK",
+                            category="x_propagation",
+                            file=token.file,
+                            line=token.line,
+                            column=token.column,
+                            message="casex may hide X/Z values during matching",
+                            message_zh=f"模块 `{module.name}` 使用 `casex` 选择表达式 `{selector}`，会把 X/Z 当作通配符，可能掩盖仿真与综合语义差异。",
+                            suggestion_zh="建议改用普通 `case`，或在确有掩码需求时使用 `casez` 配合明确 `?` 位和注释说明。",
+                            confidence="high",
+                            evidence={"case_keyword": "casex", "selector": selector, "wildcard_items": wildcard_items},
+                        )
+                    )
+                elif wildcard_items:
+                    diagnostics.append(
+                        Diagnostic.make(
+                            severity="warning",
+                            rule="RTL022_CASEX_CASEZ_XPROP_RISK",
+                            category="x_propagation",
+                            file=token.file,
+                            line=token.line,
+                            column=token.column,
+                            message="casez with wildcard item may mask unknown values",
+                            message_zh=f"模块 `{module.name}` 使用带通配项的 `casez`（选择表达式 `{selector}`），匹配项：{', '.join(wildcard_items)}。",
+                            suggestion_zh="请确认 `?`/`z` 通配符合设计意图；优先使用显式掩码比较或普通 `case`，避免未知值被静默匹配。",
+                            confidence="high" if any("?" in item for item in wildcard_items) else "medium",
+                            evidence={"case_keyword": "casez", "selector": selector, "wildcard_items": wildcard_items},
+                        )
+                    )
+    return diagnostics
+
+
+def _rule_signed_unsigned(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        symbols = _module_symbols(module)
+        assignments = list(module.continuous_assigns)
+        assignments.extend(assignment for block in module.always_blocks for assignment in block.assignments)
+        for assignment in assignments:
+            # Explicit SystemVerilog casts document the intended conversion and are a safe subset.
+            if any(token.value in {"$signed", "$unsigned"} for token in assignment.expr_tokens):
+                continue
+            operands = _signedness_operands(assignment.expr_tokens, symbols)
+            signs = {item["signedness"] for item in operands}
+            target = symbols.get(assignment.target)
+            target_sign = getattr(target, "signedness", None) if target else None
+            target_width = _signal_width(target)
+            expr_width = _expression_width(assignment.expr_tokens, symbols)
+            operators = [token.value for token in assignment.expr_tokens if token.value in {"+", "-", "*", "/", "%", "<", "<=", ">", ">=", "==", "!=", "===", "!==", "<<", ">>", "<<<", ">>>", "?"}]
+            mixed_operands = len(signs) > 1
+            assignment_conversion = bool(target_sign and signs and target_sign not in signs)
+            if not mixed_operands and not assignment_conversion:
+                continue
+            relation = "表达式操作数" if mixed_operands else "赋值目标与右侧表达式"
+            op_text = ", ".join(sorted(set(operators))) or "assignment"
+            diagnostics.append(
+                Diagnostic.make(
+                    severity="warning",
+                    rule="RTL023_SIGNED_UNSIGNED_RISK",
+                    category="signedness",
+                    file=assignment.span.file,
+                    line=assignment.span.line,
+                    column=assignment.span.column,
+                    message="mixed signed and unsigned expression or assignment",
+                    message_zh=(
+                        f"模块 `{module.name}` 中 `{assignment.target}` 的{relation}混用了 signed/unsigned，"
+                        f"操作 `{op_text}` 可能改变扩展、比较、移位或截断语义。"
+                    ),
+                    suggestion_zh="建议显式使用 `$signed`、`$unsigned` 或带宽度的类型转换/拼接扩展，避免依赖隐式 signedness 规则。",
+                    confidence="high" if mixed_operands and operators else "medium",
+                    evidence={
+                        "target": assignment.target,
+                        "target_signedness": target_sign,
+                        "target_width": target_width,
+                        "expression_width": expr_width,
+                        "operators": sorted(set(operators)),
+                        "operands": operands,
+                    },
+                )
+            )
+        for block in module.always_blocks:
+            for index, token in enumerate(block.body_tokens):
+                if token.value != "if" or index + 1 >= len(block.body_tokens) or block.body_tokens[index + 1].value != "(":
+                    continue
+                condition, close_index = _balanced_group(block.body_tokens, index + 1, "(", ")")
+                if close_index is None or any(item.value in {"$signed", "$unsigned"} for item in condition):
+                    continue
+                operands = _signedness_operands(condition, symbols)
+                signs = {item["signedness"] for item in operands}
+                operators = [item.value for item in condition if item.value in {"==", "!=", "===", "!==", "<", "<=", ">", ">="}]
+                if len(signs) < 2 or not operators:
+                    continue
+                diagnostics.append(
+                    Diagnostic.make(
+                        severity="warning",
+                        rule="RTL023_SIGNED_UNSIGNED_RISK",
+                        category="signedness",
+                        file=token.file,
+                        line=token.line,
+                        column=token.column,
+                        message="mixed signed and unsigned comparison",
+                        message_zh=f"模块 `{module.name}` 的 if 条件混用了 signed/unsigned 操作数，比较 `{', '.join(sorted(set(operators)))}` 的结果可能与显式类型转换不同。",
+                        suggestion_zh="建议在比较前显式使用 `$signed`、`$unsigned` 或位宽一致的类型转换，避免隐式扩展影响比较结果。",
+                        confidence="high",
+                        evidence={"context": "if_condition", "operators": sorted(set(operators)), "operands": operands},
+                    )
+                )
+    return diagnostics
+
+
+def _rule_multi_clock_always(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        for block in module.always_blocks:
+            pairs = _event_pairs(block)
+            signals = list(dict.fromkeys(signal for _edge, signal in pairs))
+            if len(signals) < 2:
+                continue
+            reset_signals = _async_reset_event_signals(block, pairs)
+            clock_signals = [signal for signal in signals if signal not in reset_signals]
+            if len(clock_signals) < 2:
+                continue
+            diagnostics.append(
+                Diagnostic.make(
+                    severity="warning",
+                    rule="RTL024_MULTI_CLOCK_ALWAYS",
+                    category="multi_clock",
+                    file=block.span.file,
+                    line=block.span.line,
+                    column=block.span.column,
+                    message="multiple independent clock edges in one procedural block",
+                    message_zh=f"模块 `{module.name}` 的 `{block.kind}` 事件控制含多个独立时钟边沿：{', '.join(clock_signals)}。",
+                    suggestion_zh="建议把不同时钟域拆分为独立过程块；若其中一个事件是异步复位，请保持它作为首个 reset 条件并明确复位语义。",
+                    confidence="high",
+                    evidence={
+                        "event_list": [f"{edge} {signal}" for edge, signal in pairs],
+                        "clock_signals": clock_signals,
+                        "reset_signals": reset_signals,
+                        "reset_identification": "仅将同时出现在首个 if 条件中的 reset 命名事件视为异步复位。",
+                    },
+                )
+            )
     return diagnostics
 
 
@@ -344,11 +607,104 @@ def _rule_latch_risk(design: Design) -> list[Diagnostic]:
             if not block.is_combinational() or not block.assignments:
                 continue
             values = [token.value for token in block.body_tokens]
+            risky_targets = _conditional_targets_without_default(block)
+            if not risky_targets:
+                continue
             if values.count("if") > values.count("else"):
-                diagnostics.append(_block_diag(block, "RTL003_LATCH_RISK", "latch", "组合 always 块中存在没有 else 覆盖的 if 分支，可能推断 latch。", "请为组合逻辑中的每个输出提供默认赋值，或补齐所有 if/else 分支。", confidence="medium"))
+                targets = ", ".join(sorted(risky_targets))
+                diagnostics.append(
+                    _block_diag(
+                        block,
+                        "RTL003_LATCH_RISK",
+                        "latch",
+                        f"组合 always 块中目标 `{targets}` 存在没有 else/default 覆盖的 if 分支，可能推断 latch。",
+                        "请在 if/case 前为组合输出提供默认赋值，或补齐所有 if/else 分支。",
+                        confidence="high",
+                    )
+                )
             elif any(value in {"case", "casez", "casex"} for value in values) and "default" not in values:
-                diagnostics.append(_block_diag(block, "RTL003_LATCH_RISK", "latch", "组合 case 语句缺少 default 分支，可能推断 latch。", "请添加 default 分支，或在 case 前给目标信号默认赋值。", confidence="medium"))
+                targets = ", ".join(sorted(risky_targets))
+                diagnostics.append(
+                    _block_diag(
+                        block,
+                        "RTL003_LATCH_RISK",
+                        "latch",
+                        f"组合 case 语句缺少 default，目标 `{targets}` 可能推断 latch。",
+                        "请添加 default 分支，或在 case 前给目标信号默认赋值。",
+                        confidence="high",
+                    )
+                )
     return diagnostics
+
+
+def _rule_assignment_width_mismatch(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        symbols = _module_symbols(module)
+        for assignment in module.continuous_assigns:
+            diagnostics.extend(_assignment_width_diagnostics(module, symbols, assignment))
+        for block in module.always_blocks:
+            for assignment in block.assignments:
+                diagnostics.extend(_assignment_width_diagnostics(module, symbols, assignment))
+    return diagnostics
+
+
+def _rule_incomplete_case_style(design: Design) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for module in design.modules:
+        for block in module.always_blocks:
+            if not block.is_combinational() or not block.assignments:
+                continue
+            values = [token.value for token in block.body_tokens]
+            if not any(value in {"case", "casez", "casex"} for value in values) or "default" in values:
+                continue
+            if _conditional_targets_without_default(block):
+                continue
+            diagnostics.append(
+                _block_diag(
+                    block,
+                    "RTL021_INCOMPLETE_CASE_DEFAULT",
+                    "control_flow",
+                    "组合 case 缺少 default 分支；当前目标已有默认赋值，不会按本规则判为 latch，但仍属于可疑不完整 case。",
+                    "建议补充 default 分支表达设计意图；若不可能出现其它编码，可在注释中说明约束来源。",
+                    confidence="medium",
+                )
+            )
+    return diagnostics
+
+
+def _assignment_width_diagnostics(
+    module: Module,
+    symbols: dict[str, Signal],
+    assignment: Assignment,
+) -> list[Diagnostic]:
+    target = symbols.get(assignment.target)
+    target_width = _signal_width(target)
+    actual_width = _expression_width(assignment.expr_tokens, symbols)
+    if target_width is None or actual_width is None or target_width == actual_width:
+        return []
+    if actual_width == 1 and _is_constant_zero_or_one(assignment.expr_tokens):
+        return []
+    if actual_width < target_width and _is_sized_zero_literal(assignment.expr_tokens, target_width):
+        return []
+    relation = "截断" if actual_width > target_width else "隐式扩展"
+    return [
+        Diagnostic.make(
+            severity="warning",
+            rule="RTL020_ASSIGN_WIDTH_MISMATCH",
+            category="width",
+            file=assignment.span.file,
+            line=assignment.span.line,
+            column=assignment.span.column,
+            message=f"assignment width mismatch: {assignment.target}",
+            message_zh=(
+                f"模块 `{module.name}` 中赋值目标 `{assignment.target}` 宽度为 {target_width}，"
+                f"右侧表达式估算宽度为 {actual_width}，可能发生{relation}。"
+            ),
+            suggestion_zh="请显式写出位选择、拼接、零扩展/符号扩展或调整声明宽度，避免隐式位宽转换隐藏设计意图。",
+            confidence="medium",
+        )
+    ]
 
 
 def _rule_gated_clock(design: Design) -> list[Diagnostic]:
@@ -930,11 +1286,39 @@ def _signal_bounds(signal: Signal | None) -> tuple[int, int] | None:
 
 
 def _expression_width(tokens: list[Token], symbols: dict[str, Signal]) -> int | None:
-    meaningful = [token for token in tokens if token.value not in {"(", ")"}]
+    meaningful = [token for token in tokens if token.value not in {","}]
     if not meaningful:
         return None
+    meaningful = _strip_outer_group(meaningful, "(", ")")
     if meaningful[0].value in {"&", "|", "^", "~&", "~|", "~^", "^~"}:
         return 1
+    if meaningful[0].value == "{" and meaningful[-1].value == "}":
+        inner = meaningful[1:-1]
+        widths = [_expression_width(part, symbols) for part in _split_top_level(inner, ",")]
+        if widths and all(width is not None for width in widths):
+            return sum(int(width) for width in widths if width is not None)
+    ternary = _split_ternary(meaningful)
+    if ternary:
+        _cond, true_tokens, false_tokens = ternary
+        true_width = _expression_width(true_tokens, symbols)
+        false_width = _expression_width(false_tokens, symbols)
+        if true_width is not None and false_width is not None:
+            return max(true_width, false_width)
+    binary = _split_binary_expression(meaningful)
+    if binary:
+        left, op, right = binary
+        left_width = _expression_width(left, symbols)
+        right_width = _expression_width(right, symbols)
+        if left_width is None or right_width is None:
+            return None
+        if op in {"==", "!=", ">", "<", ">=", "<=", "&&", "||"}:
+            return 1
+        if op in {"<<", ">>", "<<<", ">>>"}:
+            return left_width
+        if op == "*":
+            return left_width + right_width
+        if op in {"+", "-", "&", "|", "^"}:
+            return max(left_width, right_width)
     if len(meaningful) == 1:
         token = meaningful[0]
         if token.kind == "identifier":
@@ -953,6 +1337,95 @@ def _expression_width(tokens: list[Token], symbols: dict[str, Signal]) -> int | 
             if len(inner) == 1:
                 return 1
     return None
+
+
+def _strip_outer_group(tokens: list[Token], open_value: str, close_value: str) -> list[Token]:
+    result = tokens
+    while len(result) >= 2 and result[0].value == open_value and result[-1].value == close_value:
+        inner, close_index = _balanced_group(result, 0, open_value, close_value)
+        if close_index != len(result) - 1:
+            break
+        result = inner
+    return result
+
+
+def _split_ternary(tokens: list[Token]) -> tuple[list[Token], list[Token], list[Token]] | None:
+    depth = 0
+    question_index: int | None = None
+    for index, token in enumerate(tokens):
+        if token.value in {"(", "[", "{"}:
+            depth += 1
+        elif token.value in {")", "]", "}"}:
+            depth = max(0, depth - 1)
+        elif depth == 0 and token.value == "?" and question_index is None:
+            question_index = index
+        elif depth == 0 and token.value == ":" and question_index is not None:
+            return tokens[:question_index], tokens[question_index + 1:index], tokens[index + 1:]
+    return None
+
+
+def _split_binary_expression(tokens: list[Token]) -> tuple[list[Token], str, list[Token]] | None:
+    precedence_groups = [
+        {"||"},
+        {"&&"},
+        {"==", "!="},
+        {">", "<", ">=", "<="},
+        {"+", "-"},
+        {"<<", ">>", "<<<", ">>>"},
+        {"&", "|", "^"},
+        {"*", "/", "%"},
+    ]
+    for operators in precedence_groups:
+        depth = 0
+        for index in range(len(tokens) - 1, -1, -1):
+            token = tokens[index]
+            if token.value in {")", "]", "}"}:
+                depth += 1
+            elif token.value in {"(", "[", "{"}:
+                depth = max(0, depth - 1)
+            elif depth == 0 and token.value in operators and 0 < index < len(tokens) - 1:
+                return tokens[:index], token.value, tokens[index + 1:]
+    return None
+
+
+def _is_constant_zero_or_one(tokens: list[Token]) -> bool:
+    meaningful = _strip_outer_group([token for token in tokens if token.value != ","], "(", ")")
+    if len(meaningful) != 1 or meaningful[0].kind != "number":
+        return False
+    parsed = _parse_int_literal(meaningful[0].value)
+    return parsed in {0, 1}
+
+
+def _is_sized_zero_literal(tokens: list[Token], width: int) -> bool:
+    meaningful = _strip_outer_group([token for token in tokens if token.value != ","], "(", ")")
+    if len(meaningful) != 1 or meaningful[0].kind != "number":
+        return False
+    token = meaningful[0]
+    parsed = _parse_int_literal(token.value)
+    literal_width = _number_literal_width(token.value)
+    return parsed == 0 and literal_width == width
+
+
+def _conditional_targets_without_default(block: AlwaysBlock) -> set[str]:
+    control_tokens = [token for token in block.body_tokens if token.value in {"if", "case", "casez", "casex"}]
+    if not control_tokens:
+        return set()
+    first_control = min(control_tokens, key=_token_position)
+    default_targets = {
+        assignment.target
+        for assignment in block.assignments
+        if _token_position(assignment.span) < _token_position(first_control)
+    }
+    conditional_targets = {
+        assignment.target
+        for assignment in block.assignments
+        if _token_position(assignment.span) >= _token_position(first_control)
+    }
+    return conditional_targets - default_targets
+
+
+def _token_position(token: Token) -> tuple[int, int]:
+    return int(token.line or 1), int(token.column or 1)
 
 
 def _number_literal_width(value: str) -> int | None:
@@ -996,4 +1469,160 @@ def _parse_int_literal(value: str) -> int | None:
     try:
         return int(digits, base)
     except ValueError:
+        return None
+
+
+def _case_selector(tokens: list[Token], case_index: int) -> str:
+    if case_index + 1 >= len(tokens) or tokens[case_index + 1].value != "(":
+        return "<无法解析>"
+    inner, close_index = _balanced_group(tokens, case_index + 1, "(", ")")
+    if close_index is None:
+        return "<无法解析>"
+    return " ".join(token.value for token in inner) or "<空表达式>"
+
+
+def _case_wildcard_items(tokens: list[Token], case_index: int) -> list[str]:
+    """Return wildcard literals belonging to the current case statement.
+
+    The internal parser intentionally keeps case bodies lightweight.  Scanning the
+    token range is sufficient here because the rule only needs concrete `?`/`z`
+    literal evidence rather than complete case-item elaboration.
+    """
+    if case_index + 1 >= len(tokens) or tokens[case_index + 1].value != "(":
+        return []
+    _selector, start = _balanced_group(tokens, case_index + 1, "(", ")")
+    if start is None:
+        return []
+    depth = 0
+    found: list[str] = []
+    for token in tokens[start + 1 :]:
+        if token.value in {"case", "casez", "casex"}:
+            depth += 1
+            continue
+        if token.value == "endcase":
+            if depth == 0:
+                break
+            depth -= 1
+            continue
+        if depth == 0 and token.kind == "number" and ("?" in token.value or "z" in token.value.lower()):
+            found.append(token.value)
+    return list(dict.fromkeys(found))
+
+
+def _signedness_operands(tokens: list[Token], symbols: dict[str, Signal]) -> list[dict[str, object]]:
+    operands: list[dict[str, object]] = []
+    seen: set[str] = set()
+    for token in tokens:
+        if token.kind != "identifier" or token.value in seen:
+            continue
+        signal = symbols.get(token.value)
+        if signal is None:
+            continue
+        seen.add(token.value)
+        operands.append(
+            {
+                "name": token.value,
+                "signedness": getattr(signal, "signedness", "unsigned"),
+                "width": _signal_width(signal),
+            }
+        )
+    return operands
+
+
+def _async_reset_event_signals(block: AlwaysBlock, pairs: list[tuple[str, str]]) -> list[str]:
+    """Identify only conventional async resets with both name and branch evidence."""
+    if not pairs:
+        return []
+    tokens = block.body_tokens
+    try:
+        if_index = next(index for index, token in enumerate(tokens) if token.value == "if")
+    except StopIteration:
+        return []
+    if if_index + 1 >= len(tokens) or tokens[if_index + 1].value != "(":
+        return []
+    condition, close_index = _balanced_group(tokens, if_index + 1, "(", ")")
+    if close_index is None:
+        return []
+    condition_names = {token.value for token in condition if token.kind == "identifier"}
+    return [signal for _edge, signal in pairs if signal in condition_names and RESET_NAME_RE.search(signal)]
+
+
+def _max_generate_begin_depth(tokens: list[Token]) -> int:
+    depth = 0
+    maximum = 0
+    for token in tokens:
+        if token.value == "begin":
+            depth += 1
+            maximum = max(maximum, depth)
+        elif token.value == "end":
+            depth = max(0, depth - 1)
+    return maximum
+
+
+def _parameter_values(module: Module) -> dict[str, int]:
+    values: dict[str, int] = {}
+    pending = dict(module.parameters)
+    for _pass in range(len(pending) + 1):
+        changed = False
+        for name, signal in list(pending.items()):
+            if not signal.value:
+                continue
+            value = _evaluate_const_text(signal.value, values)
+            if value is None:
+                continue
+            values[name] = value
+            pending.pop(name)
+            changed = True
+        if not changed:
+            break
+    return values
+
+
+def _evaluate_range_text(text: str, parameters: dict[str, int]) -> tuple[int, int] | None:
+    match = re.fullmatch(r"\[\s*(.+?)\s*:\s*(.+?)\s*\]", text)
+    if not match:
+        return None
+    left = _evaluate_const_text(match.group(1), parameters)
+    right = _evaluate_const_text(match.group(2), parameters)
+    return (left, right) if left is not None and right is not None else None
+
+
+def _evaluate_const_text(text: str, parameters: dict[str, int]) -> int | None:
+    expression = text
+    for name, value in sorted(parameters.items(), key=lambda item: -len(item[0])):
+        expression = re.sub(rf"\b{re.escape(name)}\b", str(value), expression)
+
+    def literal(match: re.Match[str]) -> str:
+        parsed = _parse_int_literal(match.group(0))
+        return str(parsed) if parsed is not None else match.group(0)
+
+    expression = re.sub(r"\d+'[sS]?[bBoOdDhH][0-9a-fA-F_]+", literal, expression)
+    try:
+        node = py_ast.parse(expression, mode="eval").body
+    except SyntaxError:
+        return None
+
+    def visit(item: py_ast.AST) -> int:
+        if isinstance(item, py_ast.Constant) and isinstance(item.value, int):
+            return int(item.value)
+        if isinstance(item, py_ast.UnaryOp) and isinstance(item.op, (py_ast.UAdd, py_ast.USub, py_ast.Invert)):
+            value = visit(item.operand)
+            return value if isinstance(item.op, py_ast.UAdd) else -value if isinstance(item.op, py_ast.USub) else ~value
+        if isinstance(item, py_ast.BinOp) and isinstance(item.op, (py_ast.Add, py_ast.Sub, py_ast.Mult, py_ast.FloorDiv, py_ast.Div, py_ast.Mod, py_ast.LShift, py_ast.RShift, py_ast.BitOr, py_ast.BitAnd, py_ast.BitXor)):
+            left, right = visit(item.left), visit(item.right)
+            if isinstance(item.op, py_ast.Add): return left + right
+            if isinstance(item.op, py_ast.Sub): return left - right
+            if isinstance(item.op, py_ast.Mult): return left * right
+            if isinstance(item.op, (py_ast.Div, py_ast.FloorDiv)): return left // right
+            if isinstance(item.op, py_ast.Mod): return left % right
+            if isinstance(item.op, py_ast.LShift): return left << right
+            if isinstance(item.op, py_ast.RShift): return left >> right
+            if isinstance(item.op, py_ast.BitOr): return left | right
+            if isinstance(item.op, py_ast.BitAnd): return left & right
+            return left ^ right
+        raise ValueError("unsupported constant expression")
+
+    try:
+        return visit(node)
+    except (ValueError, ZeroDivisionError):
         return None

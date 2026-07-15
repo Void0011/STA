@@ -1,0 +1,12 @@
+{
+  "id": "risk_wide_mux_case_vector_001",
+  "language": "verilog",
+  "category": "wide_mux_priority_encoder",
+  "top": "top",
+  "files": ["wide_mux_case_vector.v"],
+  "description_zh": "8 路 16 bit case 选择网络，可能形成宽 mux。",
+  "expected_risks": ["RISK_WIDE_MUX_PRIORITY_ENCODER"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": "metadata"
+}

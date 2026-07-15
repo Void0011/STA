@@ -9,9 +9,23 @@ __pycache__/
 # 本地运行输出
 runs/
 reports/
+risk_profile/reports/*
+!risk_profile/reports/
+!risk_profile/reports/README.md
 examples/*/out/
 build/
 dist/
+
+# 本地安装包生成物（目录说明保留在 Git，二进制由 GitHub Release 承载）
+install_package/window10/*.exe
+install_package/window10/DEPENDENCIES.txt
+install_package/window10/SHA256SUMS.txt
+install_package/window11/*.exe
+install_package/window11/DEPENDENCIES.txt
+install_package/window11/SHA256SUMS.txt
+install_package/ubuntu20/*.tar.gz
+install_package/ubuntu20/DEPENDENCIES.txt
+install_package/ubuntu20/SHA256SUMS.txt
 
 # EDA / 仿真 / 波形输出
 *.vcd
@@ -30,6 +44,9 @@ dist/
 # STA-lite 生成物
 lint.log
 lint_summary.json
+risk.log
+risk_summary.json
+risk_report.md
 tokens.json
 ast.json
 summary.json
@@ -37,6 +54,10 @@ synth.v
 synth.ys
 opensta.tcl
 constraints.sdc
+
+# 可选 golden/reference 工具缓存
+tools/verilator/
+tools/downloads/verilator_*.deb
 
 # 本地环境和编辑器文件
 .env

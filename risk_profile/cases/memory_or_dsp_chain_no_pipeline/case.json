@@ -1,0 +1,12 @@
+{
+  "id": "risk_memory_or_dsp_chain_no_pipeline_001",
+  "language": "verilog",
+  "category": "memory_or_dsp_chain_no_pipeline",
+  "top": "top",
+  "files": ["memory_or_dsp_chain_no_pipeline.v"],
+  "description_zh": "RAM/DSP 风格数据后接较重组合逻辑，没有显式输出寄存或流水。",
+  "expected_risks": ["RISK_MEMORY_OR_DSP_CHAIN_NO_PIPELINE"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

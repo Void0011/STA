@@ -1,0 +1,13 @@
+{
+  "id": "risk_comb_chain_safe_001",
+  "language": "verilog",
+  "category": "combinational_loop",
+  "top": "top",
+  "files": ["comb_chain_safe.v"],
+  "description_zh": "普通无环组合链路，不应触发组合环路风险。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_COMBINATIONAL_LOOP"],
+  "expected_severity": "none",
+  "gold_available": true,
+  "gold_source": "yosys_scc"
+}

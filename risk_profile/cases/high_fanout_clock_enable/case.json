@@ -1,0 +1,12 @@
+{
+  "id": "risk_high_fanout_clock_enable_001",
+  "language": "verilog",
+  "category": "clock_enable",
+  "top": "top",
+  "files": ["high_fanout_clock_enable.v"],
+  "description_zh": "单个 clock enable 控制宽数据寄存器。",
+  "expected_risks": ["RISK_HIGH_FANOUT_CLOCK_ENABLE"],
+  "expected_severity": "high",
+  "gold_available": false,
+  "gold_source": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "verilog_warning_casex_casez_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "x_propagation",
+  "standard_focus": "IEEE1364",
+  "description_zh": "casex 与带 ?/z 通配项的 casez 可能掩盖 X/Z 匹配。",
+  "top": "top",
+  "files": ["casex_casez.v"],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

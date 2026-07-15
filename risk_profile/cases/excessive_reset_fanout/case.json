@@ -1,0 +1,12 @@
+{
+  "id": "risk_excessive_reset_fanout_001",
+  "language": "verilog",
+  "category": "excessive_reset",
+  "top": "top",
+  "files": ["excessive_reset_fanout.v"],
+  "description_zh": "异步复位覆盖 9 个 8-bit 寄存器，达到默认 reset 位数和寄存器数阈值。",
+  "expected_risks": ["RISK_EXCESSIVE_RESET"],
+  "expected_severity": "medium",
+  "gold_available": true,
+  "gold_source": "yosys_proc_stat_metadata"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_default_assignment_safe_003",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "latch_risk",
+  "standard_focus": "IEEE1364",
+  "description_zh": "组合 case 前提供默认赋值且含 default 分支，STA-lite 不应报告 latch 或 incomplete case 风险。",
+  "top": "top",
+  "files": [
+    "default_assignment_safe.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

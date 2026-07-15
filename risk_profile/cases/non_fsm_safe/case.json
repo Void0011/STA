@@ -1,0 +1,13 @@
+{
+  "id": "risk_non_fsm_safe_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["non_fsm_safe.v"],
+  "description_zh": "普通计数器不是状态机模式，不应触发 FSM 鲁棒性规则。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_severity": "none",
+  "gold_available": false,
+  "gold_source": "metadata"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_missing_case_default_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_missing_case_default.v"],
+  "description_zh": "FSM 转移 case 缺少 default 分支。",
+  "expected_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_issue": "missing_case_default",
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

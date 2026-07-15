@@ -1,0 +1,12 @@
+{
+  "id": "risk_async_reset_control_safe_002",
+  "language": "verilog",
+  "category": "async_path",
+  "top": "top",
+  "files": ["async_reset_control_safe.v"],
+  "description_zh": "标准时钟加异步 reset 不属于普通异步数据/控制事件。",
+  "expected_risks": [],
+  "forbidden_risks": ["RISK_ASYNC_DATA_CONTROL"],
+  "gold_available": false,
+  "gold_source": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "risk_io_constraint_missing_001",
+  "language": "verilog",
+  "category": "io_constraint_missing",
+  "top": "top",
+  "files": ["io_constraint_missing.v"],
+  "sdc": "missing_io.sdc",
+  "description_zh": "SDC 只有 create_clock，缺少顶层 din/dout 的 input/output delay。",
+  "expected_risks": ["RISK_IO_CONSTRAINT_MISSING", "RISK_ASYNC_RESET_RELEASE_UNSYNC"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "risk_comb_loop_self_001",
+  "language": "verilog",
+  "category": "combinational_loop",
+  "top": "top",
+  "files": ["comb_loop_self.v"],
+  "description_zh": "连续赋值右侧直接读取自身，形成单信号组合自环。",
+  "expected_risks": ["RISK_COMBINATIONAL_LOOP"],
+  "expected_severity": "high",
+  "gold_available": true,
+  "gold_source": "yosys_scc"
+}

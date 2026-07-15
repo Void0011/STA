@@ -1,0 +1,12 @@
+{
+  "id": "risk_cdc_unsync_signal_001",
+  "language": "verilog",
+  "category": "cdc_unsync_signal",
+  "top": "top",
+  "files": ["cdc_unsync_signal.v"],
+  "description_zh": "clk_a 域产生的 pulse_a 被 clk_b 域直接采样，未看到明显同步器。",
+  "expected_risks": ["RISK_CDC_UNSYNC_SIGNAL"],
+  "expected_severity": "medium",
+  "gold_available": false,
+  "gold_source": null
+}

@@ -164,7 +164,7 @@ reports/lint_diff/
 
 ## 当前覆盖状态
 
-当前主语料已迁移到四个 canonical 目录，最近一次完整差分规模为 130 个 case，覆盖 Verilog error/warning 与 SystemVerilog error/warning。最近一次差分结果：
+当前主语料已迁移到四个 canonical 目录，最近一次完整差分规模为 147 个 case（Verilog 106、SystemVerilog 41），覆盖 Verilog error/warning 与 SystemVerilog error/warning。最近一次差分结果：
 
 - 期望检出但 STA-lite 漏报：0
 - 报告文件：`reports/lint_diff/diff_summary.json`

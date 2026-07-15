@@ -1,0 +1,12 @@
+{
+  "id": "risk_multicycle_without_constraint_001",
+  "language": "verilog",
+  "category": "multicycle_without_constraint",
+  "top": "top",
+  "files": ["multicycle_without_constraint.v"],
+  "description_zh": "RTL 命名和计数结构暗示多周期行为，但没有提供 set_multicycle_path 约束。",
+  "expected_risks": ["RISK_MULTICYCLE_WITHOUT_CONSTRAINT"],
+  "expected_severity": "low",
+  "gold_available": false,
+  "gold_source": null
+}

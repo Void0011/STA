@@ -1,0 +1,13 @@
+{
+  "id": "risk_fsm_unsafe_default_001",
+  "language": "verilog",
+  "category": "fsm_robustness",
+  "top": "top",
+  "files": ["fsm_unsafe_default.v"],
+  "description_zh": "FSM default 分支保持当前 state，不能作为非法状态恢复。",
+  "expected_risks": ["RISK_FSM_ROBUSTNESS"],
+  "expected_issue": "unsafe_default_recovery",
+  "expected_severity": "medium",
+  "gold_available": true,
+  "gold_source": "yosys_fsm_metadata"
+}

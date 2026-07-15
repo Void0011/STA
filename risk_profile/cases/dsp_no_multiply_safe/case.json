@@ -1,0 +1,12 @@
+{
+  "id": "risk_dsp_no_multiply_safe_002",
+  "language": "verilog",
+  "category": "dsp_inference",
+  "top": "top",
+  "files": ["dsp_no_multiply_safe.v"],
+  "description_zh": "无乘法的宽加法不应触发 DSP 推断候选。",
+  "expected_risks": [],
+  "forbidden_risks": ["RISK_DSP_INFERENCE"],
+  "gold_available": false,
+  "gold_source": null
+}

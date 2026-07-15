@@ -1,0 +1,16 @@
+{
+  "id": "verilog_warning_multi_clock_001",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "multi_clock",
+  "standard_focus": "IEEE1364",
+  "description_zh": "两个独立时钟边沿的 always 应报告；标准时钟加异步复位不应报告。",
+  "top": "top",
+  "files": ["multi_clock.v"],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": true
+}

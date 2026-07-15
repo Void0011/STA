@@ -1,0 +1,13 @@
+{
+  "id": "risk_comb_loop_seq_feedback_safe_001",
+  "language": "verilog",
+  "category": "combinational_loop",
+  "top": "top",
+  "files": ["comb_loop_seq_feedback_safe.v"],
+  "description_zh": "时钟寄存器反馈是正常时序反馈，不应被组合环路规则误报。",
+  "expected_risks": [],
+  "expected_absent_risks": ["RISK_COMBINATIONAL_LOOP"],
+  "expected_severity": "none",
+  "gold_available": true,
+  "gold_source": "yosys_scc"
+}

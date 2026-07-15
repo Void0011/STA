@@ -1,0 +1,18 @@
+{
+  "id": "verilog_warning_explicit_extension_safe_004",
+  "language": "verilog",
+  "kind": "warning",
+  "category": "width_range",
+  "standard_focus": "IEEE1364",
+  "description_zh": "显式拼接扩展位宽，STA-lite 不应报告隐式位宽转换。",
+  "top": "top",
+  "files": [
+    "explicit_extension_safe.v"
+  ],
+  "support_files": [],
+  "expected_status": "pass",
+  "expected_keywords": [],
+  "include_dirs": [],
+  "defines": [],
+  "sta_lite_should_detect": false
+}

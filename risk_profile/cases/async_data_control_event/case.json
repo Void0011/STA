@@ -1,0 +1,12 @@
+{
+  "id": "risk_async_data_control_event_001",
+  "language": "verilog",
+  "category": "async_path",
+  "top": "top",
+  "files": ["async_data_control_event.v"],
+  "description_zh": "非 reset 控制信号直接作为时序过程异步事件。",
+  "expected_risks": ["RISK_ASYNC_DATA_CONTROL"],
+  "expected_severity": "high",
+  "gold_available": false,
+  "gold_source": null
+}
