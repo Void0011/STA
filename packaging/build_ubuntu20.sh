@@ -14,12 +14,12 @@ mkdir -p "${PAYLOAD_DIR}" "${OUTPUT_DIR}"
 rm -f "${OUTPUT_DIR}"/*.tar.gz "${OUTPUT_DIR}/SHA256SUMS.txt" "${OUTPUT_DIR}/DEPENDENCIES.txt"
 
 DATA_ARGS=(
-  --add-data "sta_lite/gui/static:sta_lite/gui/static"
-  --add-data "examples:examples"
-  --add-data "lint:lint"
-  --add-data "risk_profile:risk_profile"
-  --add-data "tests:tests"
-  --add-data "README.md:."
+  --add-data "${PROJECT_ROOT}/sta_lite/gui/static:sta_lite/gui/static"
+  --add-data "${PROJECT_ROOT}/examples:examples"
+  --add-data "${PROJECT_ROOT}/lint:lint"
+  --add-data "${PROJECT_ROOT}/risk_profile:risk_profile"
+  --add-data "${PROJECT_ROOT}/tests:tests"
+  --add-data "${PROJECT_ROOT}/README.md:."
 )
 
 python3 -m PyInstaller --noconfirm --clean --onedir --name STA-Lite \

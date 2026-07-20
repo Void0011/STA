@@ -72,6 +72,8 @@ class PackagingReleaseTests(unittest.TestCase):
         self.assertNotIn("tools/iverilog", build_text)
         self.assertIn("risk_profile", build_text)
         self.assertIn("sta_lite/gui/static", build_text)
+        self.assertIn("$ProjectRoot", build_text)
+        self.assertIn("${PROJECT_ROOT}", build_text)
 
     def test_case_metadata_is_json_serializable(self) -> None:
         json.dumps(case_registry(PROJECT_ROOT), ensure_ascii=False)

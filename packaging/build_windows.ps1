@@ -21,12 +21,12 @@ New-Item -ItemType Directory -Force $PayloadDir, $OutputDir, $WorkDir, $SpecDir 
 Get-ChildItem $OutputDir -File | Where-Object { $_.Name -ne "README.md" } | Remove-Item -Force
 
 $DataArgs = @(
-    "--add-data", "sta_lite/gui/static;sta_lite/gui/static",
-    "--add-data", "examples;examples",
-    "--add-data", "lint;lint",
-    "--add-data", "risk_profile;risk_profile",
-    "--add-data", "tests;tests",
-    "--add-data", "README.md;."
+    "--add-data", "$(Join-Path $ProjectRoot 'sta_lite\gui\static');sta_lite/gui/static",
+    "--add-data", "$(Join-Path $ProjectRoot 'examples');examples",
+    "--add-data", "$(Join-Path $ProjectRoot 'lint');lint",
+    "--add-data", "$(Join-Path $ProjectRoot 'risk_profile');risk_profile",
+    "--add-data", "$(Join-Path $ProjectRoot 'tests');tests",
+    "--add-data", "$(Join-Path $ProjectRoot 'README.md');."
 )
 
 python -m PyInstaller --noconfirm --clean --onedir --windowed --name "STA-Lite" `
